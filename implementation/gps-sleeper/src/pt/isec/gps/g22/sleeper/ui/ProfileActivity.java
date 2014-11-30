@@ -1,12 +1,11 @@
-package pt.isec.gps.a22.sleeper;
+package pt.isec.gps.g22.sleeper.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import pt.isec.gps.g22.sleeper.ui.R;
 
 public class ProfileActivity extends Activity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

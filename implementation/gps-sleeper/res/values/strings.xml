@@ -1,5 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">gps-sleeper</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="strBirthDay">Birth day</string>
+    <string name="strGender">Gender</string>
+    <string name="strFemale">Female</string>
+    <string name="strMale">Male</string>
+    <string name="strStartDayHour">Start hour</string>
+    <string name="StrOK">OK</string>
+    <string name="strCancel">Cancel</string>
 
 </resources>

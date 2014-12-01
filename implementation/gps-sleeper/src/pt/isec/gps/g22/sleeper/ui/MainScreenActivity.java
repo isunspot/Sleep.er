@@ -63,7 +63,7 @@ public class MainScreenActivity extends Activity {
 		btSleepTips.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent=new Intent(MainScreenActivity.this, SleepTips.class);
+				Intent intent=new Intent(MainScreenActivity.this, GenericTips.class);
 				startActivity(intent);
 			}
 		});

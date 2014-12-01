@@ -111,6 +111,9 @@ public class WeeklyViewActivity extends Activity {
         plot.setDomainStep(XYStepMode.INCREMENT_BY_VAL, 1);
         plot.setRangeBoundaries(0, 24 * 60, BoundaryMode.FIXED);
         plot.setDomainBoundaries(-0.5, 6.5, BoundaryMode.FIXED);
+        plot.getLayoutManager().remove(plot.getLegendWidget());
+        plot.getLayoutManager().remove(plot.getDomainLabelWidget());
+        plot.getLayoutManager().remove(plot.getRangeLabelWidget());
 
         // y-axis
         plot.setRangeValueFormat(new Format() {

@@ -9,7 +9,8 @@
     <com.androidplot.xy.XYPlot
         android:id="@+id/barPlot"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
         androidPlot.domainLabel="Day of week"
         androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
         androidPlot.graphWidget.domainGridLinePaint.alpha="0"
@@ -33,5 +34,50 @@
         androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
         androidPlot.title="Sleep schedule"
         androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size" />
+
+    <GridLayout
+        android:id="@+id/layDashboard"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:alignmentMode="alignMargins"
+        android:columnCount="3"
+        android:orientation="vertical"
+        android:rowCount="2" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_column="0"
+            android:layout_gravity="start"
+            android:layout_row="0"
+            android:text="12"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_gravity="start"
+            android:text="13"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_gravity="top|center"
+            android:layout_rowSpan="2"
+            android:text="14"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_gravity="end"
+            android:text="15"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_gravity="end"
+            android:text="16"
+            android:textSize="60sp" />
+
+    </GridLayout>
 
 </LinearLayout>

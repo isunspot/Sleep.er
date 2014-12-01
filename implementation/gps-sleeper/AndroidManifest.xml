@@ -16,6 +16,11 @@
         <activity
             android:name="pt.isec.gps.g22.sleeper.ui.WeeklyViewActivity"
             android:label="@string/title_activity_weekly_view" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

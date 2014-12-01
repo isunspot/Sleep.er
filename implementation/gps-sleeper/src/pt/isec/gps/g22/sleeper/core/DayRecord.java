@@ -9,9 +9,9 @@ package pt.isec.gps.g22.sleeper.core;
 public class DayRecord {
 	private int id;
 	private int sleepDate;
-	private int exhaustion;
+	private int exhaustion; // if unset, 0
 	private int wakeupDate;
-	private int sleepQuality;
+	private int sleepQuality; // if unset, 0
 
 	public DayRecord() {
 	}

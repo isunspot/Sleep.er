@@ -7,25 +7,25 @@ import pt.isec.gps.g22.sleeper.core.Profile;
  */
 public interface ProfileDAO {
 	/**
-	 * Creates the user profile
-	 * 
-	 * @param profile
-	 *            the profile to insert
+	 * Inserts the user profile
+	 *
+	 * @param profile the profile to insert
+	 * @return the row id, or -1 if an error occurred
 	 */
-	void insertProfile(Profile profile);
+	int insertProfile(Profile profile);
 
 	/**
 	 * Updates the user profile
-	 * 
-	 * @param profile
-	 *            the profile to update
+	 *
+	 * @param profile the profile to update
+	 * @return the number of rows affected
 	 */
-	void updateProfile(Profile profile);
+	int updateProfile(Profile profile);
 
 	/**
 	 * Returns the user profile
-	 * 
+	 *
 	 * @return the user profile, or null if the profile is not defined
 	 */
-	Profile getProfile();
+	Profile loadProfile();
 }

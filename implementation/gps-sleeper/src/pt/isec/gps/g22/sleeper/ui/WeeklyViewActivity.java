@@ -1,5 +1,8 @@
 package pt.isec.gps.g22.sleeper.ui;
 
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,14 +18,18 @@ import android.util.Log;
 import com.androidplot.ui.SeriesRenderer;
 import com.androidplot.xy.BarFormatter;
 import com.androidplot.xy.BarRenderer;
+import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.FillDirection;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.XYSeriesFormatter;
+import com.androidplot.xy.XYStepMode;
 
 public class WeeklyViewActivity extends Activity {
 
+	private static final String[] DOW = { "S", "M", "T", "W", "T", "F", "S", "" };
+	
 	private DayRecordDAO dayRecordDAO;
 	private ProfileDAO profileDAO;
 	private XYPlot plot;
@@ -40,10 +47,10 @@ public class WeeklyViewActivity extends Activity {
 		
 		setContentView(R.layout.activity_weekly_view);
 
-		wakeFormatter = new MyBarFormatter(Color.argb(200, 100, 150, 100), Color.LTGRAY);
-		sleepFormatter = new MyBarFormatter(Color.argb(200, 150, 100, 100), Color.LTGRAY);
-		undersleepFormatter = new MyBarFormatter(Color.argb(200, 100, 100, 150), Color.LTGRAY);
-		oversleepFormatter = new MyBarFormatter(Color.argb(200, 150, 150, 150), Color.LTGRAY);
+		wakeFormatter = new MyBarFormatter(Color.argb(255, 143, 255, 183), Color.LTGRAY);
+		sleepFormatter = new MyBarFormatter(Color.argb(255, 143, 227, 255), Color.LTGRAY);
+		undersleepFormatter = new MyBarFormatter(Color.argb(255, 255, 114, 0), Color.LTGRAY);
+		oversleepFormatter = new MyBarFormatter(Color.argb(255, 255, 210, 0), Color.LTGRAY);
 		
 		// final int weekStart = 0; // TODO implement
 		// final List<DayRecord> records =
@@ -53,24 +60,106 @@ public class WeeklyViewActivity extends Activity {
 
 		// final List<List<SeriesValue>> dayValuesList =
 		// WeeklyViewUtils.recordsToSeries(profile, records, weekDays);
-		final List<List<SeriesValue>> dayValuesList = new ArrayList<List<SeriesValue>>();
-		final Random rand = new Random();
-		final SeriesType[] types = new SeriesType[] { SeriesType.OVERSLEEP, SeriesType.UNDERSLEEP,  SeriesType.SLEEP,  SeriesType.WAKE }; 
-		for (int i = 0; i < 7; i++) {
-			dayValuesList.add(new ArrayList<SeriesValue>() {
-				{
-					add(new SeriesValue(1440, types[rand.nextInt(4)]));
-					int numSeries = rand.nextInt(10);
-					for (int j = 0; j < numSeries; j++) {
-						add(new SeriesValue(rand.nextInt(1440), types[rand.nextInt(4)]));
-					}
-				}
-			});	
-		}
+
+		//		final List<List<SeriesValue>> dayValuesList = new ArrayList<List<SeriesValue>>();
+//		final Random rand = new Random();
+//		final SeriesType[] types = new SeriesType[] { SeriesType.OVERSLEEP, SeriesType.UNDERSLEEP,  SeriesType.SLEEP,  SeriesType.WAKE }; 
+//		for (int i = 0; i < 7; i++) {
+//			dayValuesList.add(new ArrayList<SeriesValue>() {
+//				{
+//					add(new SeriesValue(1440, types[rand.nextInt(4)]));
+//					int numSeries = rand.nextInt(10);
+//					for (int j = 0; j < numSeries; j++) {
+//						add(new SeriesValue(rand.nextInt(1440), types[rand.nextInt(4)]));
+//					}
+//				}
+//			});	
+//		}
 		
+		final List<List<SeriesValue>> dayValuesList = new ArrayList<List<SeriesValue>>() {{
+				add(new ArrayList<SeriesValue>() {{
+					add(new SeriesValue(1440, SeriesType.WAKE));
+					add(new SeriesValue(1440 - 60, SeriesType.SLEEP));
+					add(new SeriesValue(1440 - 8 * 60, SeriesType.WAKE));
+					add(new SeriesValue(60, SeriesType.SLEEP));
+				}});
+				add(new ArrayList<SeriesValue>() {{
+					add(new SeriesValue(1440, SeriesType.SLEEP));
+					add(new SeriesValue(1440 - 6 * 60, SeriesType.UNDERSLEEP));
+					add(new SeriesValue(1440 - 6 * 60 - 30, SeriesType.WAKE));
+				}});
+				add(new ArrayList<SeriesValue>() {{
+					add(new SeriesValue(1440, SeriesType.WAKE));
+					add(new SeriesValue(1440 - 30, SeriesType.SLEEP));
+					add(new SeriesValue(1440 - 9 * 60 - 30, SeriesType.WAKE));
+				}});
+				add(new ArrayList<SeriesValue>() {{
+					add(new SeriesValue(1440, SeriesType.WAKE));
+					add(new SeriesValue(1440 - 60, SeriesType.SLEEP));
+					add(new SeriesValue(1440 - 7 * 60 - 30, SeriesType.WAKE));	
+				}});
+				add(new ArrayList<SeriesValue>() {{
+				}});
+				add(new ArrayList<SeriesValue>() {{
+				}});
+				add(new ArrayList<SeriesValue>() {{
+				}});
+		}};
 
 		plot = (XYPlot) findViewById(R.id.barPlot);
+		plot.setRangeStep(XYStepMode.INCREMENT_BY_VAL, 3 * 60);
+        plot.setDomainStep(XYStepMode.INCREMENT_BY_VAL, 1);
+        plot.setRangeBoundaries(0, 24 * 60, BoundaryMode.FIXED);
+        plot.setDomainBoundaries(-0.5, 6.5, BoundaryMode.FIXED);
 
+        // y-axis
+        plot.setRangeValueFormat(new Format() {
+
+			@Override
+			public StringBuffer format(Object object, StringBuffer buffer,
+					FieldPosition field) {
+				int delta = 2 * 60;
+				
+				int value = (int) (24 * 60 - delta - ((Double) object));
+				if (value < 0) {
+					value = 24 * 60 + value;
+				}
+				
+				if (value % 3 * 60 == 0) {
+					buffer.append(value / 60);
+				}
+				
+				return buffer;
+			}
+
+			@Override
+			public Object parseObject(String string, ParsePosition position) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+		});
+        
+        // x-axis
+        plot.setDomainValueFormat(new Format() {
+
+			@Override
+			public StringBuffer format(Object object, StringBuffer buffer,
+					FieldPosition field) {
+				
+				buffer.append("            " + DOW[((Double) object).intValue()]);
+				
+				return buffer;
+			}
+
+			@Override
+			public Object parseObject(String string, ParsePosition position) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+        	
+        });
+        
 		for (int i = 0; i < dayValuesList.size(); i++) { // iterate through the
 															// days
 			final List<SeriesValue> dayValues = dayValuesList.get(i);

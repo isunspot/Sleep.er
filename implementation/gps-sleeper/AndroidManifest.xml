@@ -21,9 +21,14 @@
             android:name=".MainScreenActivity"
             android:label="@string/title_activity_main_screen" >
             <intent-filter>
-            	<action android:name="android.intent.action.MAIN" />
-            	<category android:name="android.intent.category.LAUNCHER" />
-           </intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".GenericTips"
+            android:label="@string/title_activity_generic_tips" >
         </activity>
     </application>
 

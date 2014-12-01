@@ -11,10 +11,14 @@
     <string name="strFirstHourOfTheDay">Start hour</string>
     <string name="StrOK">OK</string>
     <string name="strCancel">Cancel</string>
+    <string name="strNext">Next</string>
+    <string name="strClose">Close</string>
     <string name="title_activity_main_screen">MainScreenActivity</string>
     <string name="strUserProfile">User Profile</string>
     <string name="strSetAlarm">Set Alarm</string>
     <string name="strWeeklyView">Weekly View</string>
     <string name="strSleepTips">Sleep Tips</string>
-        
+    <string name="title_activity_generic_tips">GenericTips</string>
+    <string name="strGenericTip">Tip</string>
+
 </resources>

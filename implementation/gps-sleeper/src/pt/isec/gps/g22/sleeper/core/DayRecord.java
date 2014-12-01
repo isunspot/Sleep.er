@@ -13,6 +13,13 @@ public class DayRecord {
 	private int wakeupDate;
 	private int sleepQuality;
 
+	public static final String TABLE_NAME = "dayrecord";
+	public static final String COLUMN_ID = "_id";
+	public static final String COLUMN_SLEEPDATE = "sleepdate";
+	public static final String COLUMN_EXHAUSTION = "exhaustion";
+	public static final String COLUMN_WAKEUPDATE = "wakeupdate";
+	public static final String COLUMN_SLEEPQUALITY = "sleepquality";
+
 	public DayRecord() {
 	}
 

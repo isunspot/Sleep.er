@@ -7,22 +7,20 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="51dp" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/lbBirthDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/strBirthDay" />
-
-        <EditText
-            android:id="@+id/dtBirthDay"
+        
+        <DatePicker 
+            android:id="@+id/dpBirthDay"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="date" />
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -62,19 +60,16 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/lbStartDayHour"
+                android:id="@+id/lbFirstHourOfTheDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/strStartDayHour" />
+                android:text="@string/strFirstHourOfTheDay" />
 
-            <EditText
-                android:id="@+id/edStartDayHour"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="time" >
+            <TimePicker
+                android:id="@+id/tpFirstHourOfTheDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-                <requestFocus />
-            </EditText>
         </LinearLayout>
 
     </LinearLayout>

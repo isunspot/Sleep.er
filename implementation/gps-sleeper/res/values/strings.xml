@@ -4,7 +4,7 @@
     <string name="app_name">gps-sleeper</string>
     <string name="strLogo">logo</string>
     <string name="title_activity_profile">Profile</string>
-    <string name="strBirthDay">Birth day</string>
+    <string name="strBirthDay">Date of Birth</string>
     <string name="strGender">Gender</string>
     <string name="strFemale">Female</string>
     <string name="strMale">Male</string>

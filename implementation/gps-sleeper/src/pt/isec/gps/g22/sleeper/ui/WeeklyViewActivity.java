@@ -28,7 +28,7 @@ import com.androidplot.xy.XYStepMode;
 
 public class WeeklyViewActivity extends Activity {
 
-	private static final String[] DOW = { "S", "M", "T", "W", "T", "F", "S", "" };
+	private static final String[] DOW = { "S", "M", "T", "W", "T", "F", "S" };
 	
 	private DayRecordDAO dayRecordDAO;
 	private ProfileDAO profileDAO;
@@ -99,10 +99,20 @@ public class WeeklyViewActivity extends Activity {
 					add(new SeriesValue(1440 - 7 * 60 - 30, SeriesType.WAKE));	
 				}});
 				add(new ArrayList<SeriesValue>() {{
+					add(new SeriesValue(1440, SeriesType.WAKE));
+					add(new SeriesValue(1440 - 3 * 60, SeriesType.SLEEP));
+					add(new SeriesValue(1440 - 10 * 60 - 30, SeriesType.OVERSLEEP));
+					add(new SeriesValue(1440 - 13 * 60 - 30, SeriesType.WAKE));
 				}});
 				add(new ArrayList<SeriesValue>() {{
+					add(new SeriesValue(1440, SeriesType.WAKE));
+					add(new SeriesValue(1440 - 1 * 60 - 30, SeriesType.SLEEP));
+					add(new SeriesValue(1440 - 10 * 60, SeriesType.WAKE));
 				}});
 				add(new ArrayList<SeriesValue>() {{
+					add(new SeriesValue(1440, SeriesType.WAKE));
+					add(new SeriesValue(1440 - 30, SeriesType.SLEEP));
+					add(new SeriesValue(1440 - 8 * 60 - 30, SeriesType.WAKE));
 				}});
 		}};
 
@@ -150,7 +160,7 @@ public class WeeklyViewActivity extends Activity {
 			public StringBuffer format(Object object, StringBuffer buffer,
 					FieldPosition field) {
 				
-				buffer.append("            " + DOW[((Double) object).intValue()]);
+				buffer.append(DOW[((Double) object).intValue()] + "       ");
 				
 				return buffer;
 			}

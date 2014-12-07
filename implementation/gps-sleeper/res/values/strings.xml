@@ -20,5 +20,11 @@
     <string name="strSleepTips">Sleep Tips</string>
     <string name="title_activity_generic_tips">GenericTips</string>
     <string name="strGenericTip">Tip</string>
+    <string name="title_activity_set_alarm">SetAlarmActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_dismiss_alarm">DismissAlarmActivity</string>
+    <string name="DismissAlarm">Dismiss</string>
+    <string name="title_activity_daily_record">DailyRecord</string>
+    <string name="strSave">Save</string>
 
 </resources>

@@ -47,8 +47,8 @@ public class MainScreenActivity extends Activity {
 		btSetAlarm.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//Intent intent=new Intent(MainScreenActivity.this, SetAlarm.class);
-				//startActivity(intent);
+				Intent intent=new Intent(MainScreenActivity.this, SetAlarmActivity.class);
+				startActivity(intent);
 			}
 		});
 		

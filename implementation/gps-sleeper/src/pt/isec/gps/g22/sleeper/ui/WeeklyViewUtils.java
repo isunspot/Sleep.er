@@ -6,23 +6,26 @@ import java.util.List;
 import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.ExhaustionLevel;
 import pt.isec.gps.g22.sleeper.core.Profile;
+import pt.isec.gps.g22.sleeper.core.SleepDelta;
 import pt.isec.gps.g22.sleeper.core.SleepDuration;
 import pt.isec.gps.g22.sleeper.core.SleepQuality;
 import pt.isec.gps.g22.sleeper.core.TimeUtils;
-import static pt.isec.gps.g22.sleeper.core.TimeUtils.duration;
 
 public class WeeklyViewUtils {
 	
 	static final int DAY_SECONDS = 24 * 60 * 60;
 	
-	static List<List<SeriesValue>> recordsToSeries(final Profile profile, final List<DayRecord> records, final List<WeekDay> weekDays) {
+	static List<List<SeriesValue>> recordsToSeries(final Profile profile, final List<DayRecord> records, final List<WeekDay> weekDays, final int now) {
 		final ChartDay[] chartDays = new ChartDay[weekDays.size()];
 		
 		int accumDebt = 0;
 		for(int i = 0; i < records.size(); i++) {
+			/*
+			 * Determine which records belong to the day
+			 */
 			final WeekDay weekDay = weekDays.get(i); 
 			List<DayRecord> dayRecords = new ArrayList<DayRecord>();
-			// Determine which records belong to the day
+			
 			for (DayRecord record : records) {
 				if (record.getSleepDate() >= weekDay.from && record.getSleepDate() <= weekDay.until) { 
 					dayRecords.add(record);
@@ -32,17 +35,20 @@ public class WeeklyViewUtils {
 			final ExhaustionLevel exhaustionLevel = averageExhaustionLevel(dayRecords);
 			final SleepQuality sleepQuality = averageSleepQuality(dayRecords);
 			
+			/*
+			 * Calculate the optimum waking time and the sleep debt
+			 */
 			int optimumWakingTime = 0;
 			int debt = 0;
 			if (records.size() == 0) { // didn't sleep
-				optimumWakingTime = optimumWakingTime(weekDay.from, profile, accumDebt, exhaustionLevel, sleepQuality);
+				optimumWakingTime = optimumWakingTime(weekDay.from, profile, accumDebt, exhaustionLevel, sleepQuality, now);
 				debt = optimumWakingTime - weekDay.from;
 			} else if (records.size() == 1) { // 1 sleep period
-				optimumWakingTime = optimumWakingTime(dayRecords.get(0).getSleepDate(), profile, accumDebt, exhaustionLevel, sleepQuality);
+				optimumWakingTime = optimumWakingTime(dayRecords.get(0).getSleepDate(), profile, accumDebt, exhaustionLevel, sleepQuality, now);
 				debt = optimumWakingTime - dayRecords.get(0).getWakeupDate();
 			} else { // multiple sleep periods
 				final int sleepSum = sleepSum(records); // Time slept during the day
-				int wakeTimeSinceDayStart = optimumWakingTime(weekDay.from, profile, accumDebt, exhaustionLevel, sleepQuality);
+				int wakeTimeSinceDayStart = optimumWakingTime(weekDay.from, profile, accumDebt, exhaustionLevel, sleepQuality, now);
 				int lastPeriodDebt = (wakeTimeSinceDayStart - weekDay.from) - sleepSum;
 				debt = dayRecords.get(dayRecords.size() - 1).getWakeupDate() + lastPeriodDebt;
 				optimumWakingTime = dayRecords.get(dayRecords.size() - 1).getSleepDate() + lastPeriodDebt;
@@ -53,6 +59,9 @@ public class WeeklyViewUtils {
 			accumDebt += debt;
 		}
 		
+		/*
+		 * Calculate the series values for each chart day  
+		 */
 		final List<List<SeriesValue>> dayValuesList = new ArrayList<List<SeriesValue>>();
 		for(final ChartDay chartDay : chartDays) {
 			final List<SeriesValue> dayValues = new ArrayList<SeriesValue>();
@@ -170,7 +179,7 @@ public class WeeklyViewUtils {
 			final SleepQuality sleepQuality, final int now) {
 		final boolean isMale = profile.getGender() == 0;
 		final int age = TimeUtils.ageFromDateOfBirth(profile.getDateOfBirth(), now);
-		int base = SleepDuration.getDuration(age, isMale);
+		int base = SleepDuration.getDuration(age, isMale); 
 		int delta = SleepDelta.getDelta(accumDebt, exhaustionLevel, sleepQuality);
 		
 		return start + base + delta;
@@ -191,34 +200,6 @@ public class WeeklyViewUtils {
 		
 		return week;
 	}
-}
-
-class SleepDelta {
-	static final int[][] x_axis = {
-			{ -duration(1, 30), -duration(1), -duration(0, 30), 0, duration(0, 30), duration(1), duration(1, 30) },
-			{ -duration(1, 10), -duration(0, 50), -duration(0, 30), 0, duration(0, 30), duration(1), duration(1, 30) },
-			{ -duration(1), -duration(0, 45), -duration(0, 30), 0, duration(0, 30), duration(1, 15), duration(2) }
-	};
-	static final int[][] y_axis = {
-			{ duration(1, 10), duration(0, 50), duration(0, 30), 0, -duration(0, 10), -duration(0, 20), -duration(0, 30) },
-			{ duration(1), duration(0, 40), duration(0, 20), 0, -duration(0, 15), -duration(0, 30), -duration(0, 45) },
-			{ duration(0, 30), duration(0, 20), duration(0, 10), 0, -duration(0, 20), -duration(0, 40), -duration(1) }
-	};
-	
-	public static int getDelta(final int accumDebt, final ExhaustionLevel exhaustionLevel, final SleepQuality sleepQuality) {
-//		if (exhaustionLevel == null || sleepQuality == null) {
-//			return 0;
-//		}
-//		
-//		final int[] x_values = x_axis[exhaustionLevel.getLevel() - 1];
-//		final int[] y_values = y_axis[sleepQuality.getLevel() - 1];
-		
-		return 0;
-	}
-	
-//	private static int getXValue(final int[] values, final int value) {
-//		
-//	}
 }
 
 /**
@@ -263,6 +244,9 @@ enum SeriesType {
 	OVERSLEEP
 }
 
+/**
+ * Represents a series value
+ */
 class SeriesValue {
 	final int value;
 	final SeriesType type;

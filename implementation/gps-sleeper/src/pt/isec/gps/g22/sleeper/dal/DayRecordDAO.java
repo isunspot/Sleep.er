@@ -56,4 +56,11 @@ public interface DayRecordDAO {
 	 * @return the number of rows affected
 	 */
 	int deleteRecord(DayRecord dayRecord);
+	/**
+	 * 
+	 * @param weekStart
+	 * 				the start day of week
+	 * @returnReturns a week list of dayRecords
+	 */
+	List<DayRecord> getWeekRecords(int weekStart);
 }

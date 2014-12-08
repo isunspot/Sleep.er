@@ -11,6 +11,7 @@
     <string name="strFirstHourOfTheDay">Start hour</string>
     <string name="StrOK">OK</string>
     <string name="strCancel">Cancel</string>
+    <string name="strSave">Save</string>
     <string name="strNext">Next</string>
     <string name="strClose">Close</string>
     <string name="title_activity_main_screen">MainScreenActivity</string>
@@ -25,6 +26,9 @@
     <string name="title_activity_dismiss_alarm">DismissAlarmActivity</string>
     <string name="DismissAlarm">Dismiss</string>
     <string name="title_activity_daily_record">DailyRecord</string>
-    <string name="strSave">Save</string>
-
-</resources>
+    <string name="strProfile">Profile</string>
+    <string name="icProfile">Profile Icon</string>
+    <string name="icDateOfBirth">Date Of Birth Icon</string>
+    <string name="icGender">Gender Icon</string>
+    <string name="icFirstHour">First Hour Icon</string>
+   </resources>

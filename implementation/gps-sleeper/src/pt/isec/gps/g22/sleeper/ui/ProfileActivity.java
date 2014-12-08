@@ -1,19 +1,25 @@
 package pt.isec.gps.g22.sleeper.ui;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.RadioButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import pt.isec.gps.g22.sleeper.core.Profile;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAOImpl;
@@ -23,97 +29,277 @@ public class ProfileActivity extends Activity {
     
     ProfileDAOImpl profileDAOImpl;
     Profile profile;
-    TimePicker tpFirstHourOfTheDay;
-    DatePicker dpDateOfBirth;
-    RadioButton rbFemale, rbMale;
-    Button btOk, btCancel;
+    
+    TextView tvDateOfBirth,tvDateOfBirthValue,tvGender,tvGenderValue,tvFirstHour,tvFirstHourValue,tvSave;
+    LinearLayout layoutDateOfBirth, layoutGender, layoutFirstHour, layoutSave;
+    Typeface tf,tfBold;
+    
+	long unixtime = 0;
     int gender = 0;
+    CharSequence options[] = {"Male","Female"};
+    int time = 0;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         
-        dpDateOfBirth = (DatePicker) findViewById(R.id.dpBirthDay);
-        tpFirstHourOfTheDay = (TimePicker) findViewById(R.id.tpFirstHourOfTheDay);
-        rbFemale = (RadioButton) findViewById(R.id.rbFemale);
-        rbMale = (RadioButton) findViewById(R.id.rbMale);
-        btOk = (Button) findViewById(R.id.btOk);
-        btCancel = (Button) findViewById(R.id.btCancel);
-
-        boolean isDefined = getIntent().getBooleanExtra("isDefined",false);
-        profileDAOImpl = new ProfileDAOImpl(ProfileActivity.this);
+        tvDateOfBirth = (TextView) findViewById(R.id.tvDateOfBirth);
+        tvGender = (TextView) findViewById(R.id.tvGender);
+        tvFirstHour = (TextView) findViewById(R.id.tvFirstHour);
+        tvDateOfBirthValue = (TextView) findViewById(R.id.tvDateOfBirthValue);
+        tvGenderValue = (TextView) findViewById(R.id.tvGenderValue);
+        tvFirstHourValue = (TextView) findViewById(R.id.tvFirstHourValue);
+        tvSave = (TextView) findViewById(R.id.tvSave);
         
-        if(isDefined) {    
-            profile = profileDAOImpl.loadProfile();
-            Calendar c = unixtimeToCalendar(profile.getDateOfBirth());
-            dpDateOfBirth.init(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH), null);
-            //tpFirstHourOfTheDay.setCurrentHour(currentHour);
-            //tpFirstHourOfTheDay.setCurrentMinute(currentMinute);
-            if(profile.getGender() == 0) {
-                rbMale.setEnabled(true);
-                rbFemale.setEnabled(false);
-            } else {
-                rbMale.setEnabled(false);
-                rbFemale.setEnabled(true);
+        hideActionBar();
+        setFonts();
+        
+        tvDateOfBirthValue.setText(getDate(unixtime));
+        
+        layoutDateOfBirth = (LinearLayout)findViewById(R.id.LayoutDateOfBirth);
+        layoutGender = (LinearLayout)findViewById(R.id.LayoutGender);
+        layoutFirstHour = (LinearLayout)findViewById(R.id.LayoutFirstHour);
+        layoutSave = (LinearLayout)findViewById(R.id.LayoutSave);
+        
+        layoutDateOfBirth.setOnClickListener(new OnClickListener() {
+           @Override
+           public void onClick(View v) {
+        	    DialogFragment newFragment = new DatePickerFragment();
+        	    newFragment.show(getFragmentManager(), "datePicker");
+           }
+        }); 
+        
+        layoutGender.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            		CustomDialogFragment newFragment = new CustomDialogFragment();
+            	    newFragment.show(getFragmentManager(), "customDialogFragment");
+            }
+         }); 
+        
+        layoutFirstHour.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+        	    DialogFragment newFragment = new TimePickerFragment();
+        	    newFragment.show(getFragmentManager(), "timePicker");
+            }
+        });
+        
+        layoutSave.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+        	    
+            }
+        });
+    }
+        
+    private void hideActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.hide();
+    }
+    
+    private void setFonts() {
+        tf = Typeface.createFromAsset(getAssets(), "NotoSans-Regular.ttf"); 
+        tfBold = Typeface.createFromAsset(getAssets(), "Roboto-Regular.ttf"); 
+        
+        tvDateOfBirth.setTypeface(tf);
+        tvGender.setTypeface(tf);
+        tvFirstHour.setTypeface(tf);
+        tvDateOfBirthValue.setTypeface(tfBold);
+        tvGenderValue.setTypeface(tfBold);
+        tvFirstHourValue.setTypeface(tfBold);
+        tvSave.setTypeface(tf);
+    }
+    
+    private String getDate(long unixtime) {
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTimeInMillis(unixtime);
+    	int month = cal.get(Calendar.MONTH)+1;
+    	String s = cal.get(Calendar.YEAR) + "/" + month + "/" + cal.get(Calendar.DAY_OF_MONTH);
+    	return s;
+    }
+    
+    private String getTime(int time) {
+    	int hours = minutesToHours(time);
+    	int minutes = minutesToMinutes(time);
+    	StringBuilder sb = new StringBuilder();
+    	
+    	if(hours < 10)
+    		sb.append("0");
+    	sb.append(hours);
+    	sb.append(":");
+    	if(minutes < 10)
+    		sb.append("0");
+    	sb.append(minutes);
+    	return sb.toString();
+    }
+    
+    private int minutesToHours(int time) {
+    	return time / 60;
+    }
+    
+    private int minutesToMinutes(int time) {
+    	return time % 60;
+    }
+            
+    public class CustomDialogFragment extends DialogFragment {
+        public CustomDialogFragment() {
+        }
+
+    	
+    	@Override
+    	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    		builder.setTitle(R.string.strGender)
+    		.setItems(options, new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int which) {
+    				if(which == 0) {
+    					gender = 0;
+    				} else {
+    					if(which == 1) {
+    						gender = 1;
+    					}
+    				}
+    				tvGenderValue.setText(options[gender]);
+    			}
+    		});		
+    		return builder.create();
+    	}
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            final Resources res = getResources();
+            final int color = Color.parseColor("#6627ae60");
+            // Title
+            final int titleId = res.getIdentifier("alertTitle", "id", "android");
+            final View title = getDialog().findViewById(titleId);
+            if (title != null) {
+                ((TextView) title).setTextColor(color);
+            }
+
+            // Title divider
+            final int titleDividerId = res.getIdentifier("titleDivider", "id", "android");
+            final View titleDivider = getDialog().findViewById(titleDividerId);
+            if (titleDivider != null) {
+                titleDivider.setBackgroundColor(color);
             }
         }
+
+    }
+        	
+    public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+    	@Override
+    	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		final Calendar c = Calendar.getInstance();
+    		int hour = c.get(Calendar.HOUR_OF_DAY);
+    		int minute = c.get(Calendar.MINUTE);
+
+    		return new TimePickerDialog(getActivity(), this, hour, minute,DateFormat.is24HourFormat(getActivity()));
+    	}
+
+    	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    		time = convertToMinutes(hourOfDay,minute);
+    		tvFirstHourValue.setText(getTime(time));
+    	}
+    	
+        @Override
+        public void onStart() {
+            super.onStart();
+            final Resources res = getResources();
+            final int color = Color.parseColor("#6627ae60");
+            // Title
+            final int titleId = res.getIdentifier("alertTitle", "id", "android");
+            final View title = getDialog().findViewById(titleId);
+            if (title != null) {
+                ((TextView) title).setTextColor(color);
+            }
+
+            // Title divider
+            final int titleDividerId = res.getIdentifier("titleDivider", "id", "android");
+            final View titleDivider = getDialog().findViewById(titleDividerId);
+            if (titleDivider != null) {
+                titleDivider.setBackgroundColor(color);
+            }
+        }
+        
+        private int convertToMinutes(int hours, int minutes) {
+        	return hours * 60 + minutes;
+        }
+        
+    }
+    
+    public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+    	Calendar max;
+    	Calendar min;
+    	
+    	@Override
+    	public Dialog onCreateDialog(Bundle savedInstanceState) {
+    		
+    		DatePickerDialog datePickerDialog = setDatePicker();
+    		setMin(datePickerDialog);
+    		setMax(datePickerDialog);
+    		return datePickerDialog;
+    	}
+    	
+    	public void onDateSet(DatePicker view, int year, int month, int day) {
+    		unixtime = dateToUnixtime(year,month,day);
+    		Log.d("UnixT:",String.valueOf(unixtime));
+    		String s = getDate(unixtime);
+    		Log.d("Value",s);
+            tvDateOfBirthValue.setText(s);
+    	}
+    	
+        @Override
+        public void onStart() {
+            super.onStart();
+            final Resources res = getResources();
+            final int color = Color.parseColor("#6627ae60");
+            // Title
+            final int titleId = res.getIdentifier("alertTitle", "id", "android");
+            final View title = getDialog().findViewById(titleId);
+            if (title != null) {
+                ((TextView) title).setTextColor(color);
+            }
+
+            // Title divider
+            final int titleDividerId = res.getIdentifier("titleDivider", "id", "android");
+            final View titleDivider = getDialog().findViewById(titleDividerId);
+            if (titleDivider != null) {
+                titleDivider.setBackgroundColor(color);
+            }
+        }
+        
+        private long dateToUnixtime(int year, int month, int day) {
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, year);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.DAY_OF_MONTH, day);
+            return cal.getTimeInMillis();
+        }
                 
-        rbMale.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                    boolean isChecked) {
-                rbMale.setEnabled(true);
-                rbFemale.setEnabled(false);
-                gender = 0;
-            }
-        });
+        private DatePickerDialog setDatePicker() {
+    		Calendar cal = Calendar.getInstance();
+        		
+    		int year = cal.get(Calendar.YEAR);
+    		int month = cal.get(Calendar.MONTH);
+    		int day = cal.get(Calendar.DAY_OF_MONTH);
+    		
+        	return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
         
-        rbFemale.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                    boolean isChecked) {
-                rbFemale.setEnabled(true);
-                rbMale.setEnabled(false);
-                gender = 1;
-            }
-        });
+        private void setMax(DatePickerDialog datePickerDialog) {
+        	max = Calendar.getInstance();
+    		max.add(Calendar.YEAR,-13);
+    		datePickerDialog.getDatePicker().setMaxDate(max.getTimeInMillis());
+        }
         
-        btOk.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(profile == null) {
-                    profile = new Profile();
-                    profile.setGender(gender);
-                    profile.setDateOfBirth((int)dateOfBirthToUnixtime());
-                    profile.setFirstHourOfTheDay(182381293);
-                    profileDAOImpl.insertProfile(profile);
-                } else {
-                    profileDAOImpl.updateProfile(profile);
-                }
-                finish();
-            }
-        });
-        
-        btCancel.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        private void setMin(DatePickerDialog datePickerDialog) {
+        	min = Calendar.getInstance();
+    		min.add(Calendar.YEAR,-120);
+    		datePickerDialog.getDatePicker().setMinDate(min.getTimeInMillis());
+        }
     }
     
-    private long dateOfBirthToUnixtime() {
-        Calendar calendar = new GregorianCalendar();
-        calendar.set(Calendar.YEAR, dpDateOfBirth.getYear());
-        calendar.set(Calendar.MONTH, dpDateOfBirth.getMonth());
-        calendar.set(Calendar.DAY_OF_MONTH, dpDateOfBirth.getDayOfMonth());
-        return calendar.getTimeInMillis();
-    }
-    
-    private Calendar unixtimeToCalendar(int unixtime) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(unixtime);
-        return calendar;
-    }    
 }

@@ -15,7 +15,48 @@ public class WeeklyViewUtils {
 	
 	static final int DAY_SECONDS = 24 * 60 * 60;
 	
-	static List<List<SeriesValue>> recordsToSeries(final Profile profile, final List<DayRecord> records, final List<WeekDay> weekDays, final int now) {
+	/**
+	 * Calculates a list of the series values for each chart day
+	 * @param chartDays an array of chart days
+	 * @return a list with lists of series values
+	 */
+	static List<List<SeriesValue>> recordsToSeries(final ChartDay[] chartDays) {
+		final List<List<SeriesValue>> dayValuesList = new ArrayList<List<SeriesValue>>();
+		for(final ChartDay chartDay : chartDays) {
+			final List<SeriesValue> dayValues = new ArrayList<SeriesValue>();
+			final int recordCount = chartDay.records.size();
+			
+			if (recordCount == 1) {
+				dayValues.addAll(recordValues(chartDay.records.get(0), chartDay.optimumWakingTime));
+			} else if (recordCount > 1) {
+				final int lastRecordIndex = recordCount - 1;
+				for (int i = 0; i < recordCount; i++) {
+					final DayRecord dayRecord = chartDay.records.get(i);
+					final boolean isLast = i == lastRecordIndex;
+					
+					if (isLast) {
+						dayValues.addAll(recordValues(dayRecord, chartDay.optimumWakingTime));
+					} else {
+						dayValues.addAll(recordValues(dayRecord, dayRecord.getWakeupDate()));
+					}
+				}
+			}
+			
+			dayValuesList.add(dayValues);
+		}
+
+		return dayValuesList; 
+	}
+	
+	/**
+	 * Calculates the chart days
+	 * @param profile the user profile
+	 * @param records a list of day records
+	 * @param weekDays a list of week days
+	 * @param now the current moment
+	 * @return an array of chart days
+	 */
+	static ChartDay[] getChartDays(final Profile profile, final List<DayRecord> records, final List<WeekDay> weekDays, final int now) {
 		final ChartDay[] chartDays = new ChartDay[weekDays.size()];
 		
 		int accumDebt = 0;
@@ -59,38 +100,66 @@ public class WeeklyViewUtils {
 			accumDebt += debt;
 		}
 		
-		/*
-		 * Calculate the series values for each chart day  
-		 */
-		final List<List<SeriesValue>> dayValuesList = new ArrayList<List<SeriesValue>>();
-		for(final ChartDay chartDay : chartDays) {
-			final List<SeriesValue> dayValues = new ArrayList<SeriesValue>();
-			final int recordCount = chartDay.records.size();
-			
-			if (recordCount == 1) {
-				dayValues.addAll(recordValues(chartDay.records.get(0), chartDay.optimumWakingTime));
-			} else if (recordCount > 1) {
-				final int lastRecordIndex = recordCount - 1;
-				for (int i = 0; i < recordCount; i++) {
-					final DayRecord dayRecord = chartDay.records.get(i);
-					final boolean isLast = i == lastRecordIndex;
-					
-					if (isLast) {
-						dayValues.addAll(recordValues(dayRecord, chartDay.optimumWakingTime));
-					} else {
-						dayValues.addAll(recordValues(dayRecord, dayRecord.getWakeupDate()));
-					}
-				}
-			}
-			
-			dayValuesList.add(dayValues);
-		}
-
-		return dayValuesList; 
+		return chartDays;
 	}
 	
 	/**
-	 * Calculates the sum of the time slept over a list of day recoreds.
+	 * Calculates the week sleep debt
+	 * @param chartDays the week days
+	 * @return the week sleep debt
+	 */
+	static int getWeekSleepDebt(final ChartDay[] chartDays) {
+		return chartDays[chartDays.length - 1].accumulatedDebt;
+	}
+	
+	/**
+	 * Calculates the minimum time slept in a day
+	 * @param chartDays an array of chart days
+	 * @return the minimum time slept in a day
+	 */
+	static int getMinTimeSleptInADay(final ChartDay[] chartDays) {
+		if (chartDays.length < 1) {
+			throw new IllegalArgumentException("Invalid chart days");
+		}
+		
+		int min = sleepSum(chartDays[0].records);
+		
+		for (int i = 1; i < chartDays.length; i++) {
+			int slept = sleepSum(chartDays[i].records);
+			
+			if (slept < min) {
+				min = slept;
+			}
+		}
+		
+		return min;
+	}
+	
+	/**
+	 * Calculates the maximum time slept in a day
+	 * @param chartDays an array of chart days
+	 * @return the maximum time slept in a day
+	 */
+	static int getMaxTimeSleptInADay(final ChartDay[] chartDays) {
+		if (chartDays.length < 1) {
+			throw new IllegalArgumentException("Invalid chart days");
+		}
+		
+		int max = sleepSum(chartDays[0].records);
+		
+		for (int i = 1; i < chartDays.length; i++) {
+			int slept = sleepSum(chartDays[i].records);
+			
+			if (slept > max) {
+				max = slept;
+			}
+		}
+		
+		return max;
+	}
+	
+	/**
+	 * Calculates the sum of the time slept over a list of day records.
 	 * @param records the day records list
 	 * @return the sum of the time slept in minutes
 	 */
@@ -104,10 +173,10 @@ public class WeeklyViewUtils {
 	}
 	
 	/**
-	 * Calculates the average exhaustion level over a list of day records. Only the days with
+	 * Calculates the average exhaustion level over a list of day records. Only the records with
 	 * exhaustion level set (level > 0) are considered for the average calculation.
 	 * @param records the day records list
-	 * @return the calculated average or 0 if the days don't have exhaustion level set.
+	 * @return the calculated average or null if the records don't have exhaustion level set
 	 */
 	static ExhaustionLevel averageExhaustionLevel(final List<DayRecord> records) {
 		int exaustion = 0;
@@ -120,14 +189,40 @@ public class WeeklyViewUtils {
 			}
 		}
 		
-		return ExhaustionLevel.fromInt(exaustion / count);
+		return count == 0 ? null : ExhaustionLevel.fromInt(exaustion / count);
 	}
 	
 	/**
-	 * Calculates the average sleep quality level over a list of day records. Only the days with
+	 * Calculates the average exhaustion level over an array of chart days. Only the days with
+	 * exhaustion level set (level > 0) are considered for the average calculation.
+	 * @param chartDays the day records
+	 * @return the calculated average or null if the days don't have exhaustion level set 
+	 */
+	static ExhaustionLevel averageExhaustionLevel(final ChartDay[] chartDays) {
+		final ExhaustionLevel[] levels = new ExhaustionLevel[chartDays.length];
+		
+		for (int i = 0; i < chartDays.length; i++) {
+			levels[i] = averageExhaustionLevel(chartDays[i].records);
+		}
+		
+		int count = 0;
+		int sum = 0;
+		for (int i = 0; i < levels.length; i++) {
+			final ExhaustionLevel level = levels[i];
+			if (level != null) {
+				count++;
+				sum += level.getLevel();
+			}
+		}
+		
+		return count == 0 ? null : ExhaustionLevel.fromInt(sum / count);
+	}
+	
+	/**
+	 * Calculates the average sleep quality level over a list of day records. Only the records with
 	 * sleep quality set (level > 0) are considered for the average calculation.
 	 * @param records the day records list
-	 * @return the calculated average or 0 if the days don't have sleep quality set.
+	 * @return the calculated average or null if the records don't have sleep quality set.
 	 */
 	static SleepQuality averageSleepQuality(final List<DayRecord> records) {
 		int quality = 0;
@@ -140,7 +235,33 @@ public class WeeklyViewUtils {
 			}
 		}
 		
-		return SleepQuality.fromInt(quality / count);
+		return count == 0 ? null : SleepQuality.fromInt(quality / count);
+	}
+	
+	/**
+	 * Calculates the average sleep quality level over a list of chart days. Only the days with
+	 * sleep quality set (level > 0) are considered for the average calculation.
+	 * @param records the day records
+	 * @return the calculated average or null if the days don't have sleep quality set.
+	 */
+	static SleepQuality averageSleepQuality(final ChartDay[] chartDays) {
+		final SleepQuality[] levels = new SleepQuality[chartDays.length];
+		
+		for (int i = 0; i < chartDays.length; i++) {
+			levels[i] = averageSleepQuality(chartDays[i].records);
+		}
+		
+		int count = 0;
+		int sum = 0;
+		for (int i = 0; i < levels.length; i++) {
+			final SleepQuality level = levels[i];
+			if (level != null) {
+				count++;
+				sum += level.getLevel();
+			}
+		}
+		
+		return count == 0 ? null : SleepQuality.fromInt(sum / count);
 	}
 	
 	/**

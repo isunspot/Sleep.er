@@ -4,35 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
+import pt.isec.gps.g22.sleeper.core.ExhaustionLevel;
 import pt.isec.gps.g22.sleeper.core.Profile;
-
-import static pt.isec.gps.g22.sleeper.ui.WeeklyViewUtils.duration;
-
-class WeekDay {
-	final int from;
-	final int until;
-
-	public WeekDay(final int from, final int until) {
-		super();
-		this.from = from;
-		this.until = until;
-	}
-}
-
-class ChartDay {
-	final int debt;
-	final int accumulatedDebt;
-	final int optimumWakingTime;
-	final List<DayRecord> records;
-	
-	public ChartDay(int debt, int accumulatedDebt, int optimumWakingTime, List<DayRecord> records) {
-		super();
-		this.debt = debt;
-		this.accumulatedDebt = accumulatedDebt;
-		this.optimumWakingTime = optimumWakingTime;
-		this.records = records;
-	}
-}
+import pt.isec.gps.g22.sleeper.core.SleepDuration;
+import pt.isec.gps.g22.sleeper.core.SleepQuality;
+import pt.isec.gps.g22.sleeper.core.TimeUtils;
+import static pt.isec.gps.g22.sleeper.core.TimeUtils.duration;
 
 public class WeeklyViewUtils {
 	
@@ -103,6 +80,11 @@ public class WeeklyViewUtils {
 		return dayValuesList; 
 	}
 	
+	/**
+	 * Calculates the sum of the time slept over a list of day recoreds.
+	 * @param records the day records list
+	 * @return the sum of the time slept in minutes
+	 */
 	static int sleepSum(final List<DayRecord> records) {
 		int sleepSum = 0;
 		for (DayRecord record : records) {
@@ -112,6 +94,12 @@ public class WeeklyViewUtils {
 		return sleepSum;
 	}
 	
+	/**
+	 * Calculates the average exhaustion level over a list of day records. Only the days with
+	 * exhaustion level set (level > 0) are considered for the average calculation.
+	 * @param records the day records list
+	 * @return the calculated average or 0 if the days don't have exhaustion level set.
+	 */
 	static ExhaustionLevel averageExhaustionLevel(final List<DayRecord> records) {
 		int exaustion = 0;
 		int count = 0;
@@ -126,6 +114,12 @@ public class WeeklyViewUtils {
 		return ExhaustionLevel.fromInt(exaustion / count);
 	}
 	
+	/**
+	 * Calculates the average sleep quality level over a list of day records. Only the days with
+	 * sleep quality set (level > 0) are considered for the average calculation.
+	 * @param records the day records list
+	 * @return the calculated average or 0 if the days don't have sleep quality set.
+	 */
 	static SleepQuality averageSleepQuality(final List<DayRecord> records) {
 		int quality = 0;
 		int count = 0;
@@ -140,6 +134,12 @@ public class WeeklyViewUtils {
 		return SleepQuality.fromInt(quality / count);
 	}
 	
+	/**
+	 * Returns the list of series values that correspond to a day record
+	 * @param record the day records
+	 * @param optimumWakingTime the optimum waking time for the period in the record
+	 * @return the list of series values that matches the record
+	 */
 	static List<SeriesValue> recordValues(final DayRecord record, final int optimumWakingTime) {
 		final List<SeriesValue> values = new ArrayList<SeriesValue>();
 		
@@ -157,11 +157,30 @@ public class WeeklyViewUtils {
 		return values;
 	}
 	
+	/**
+	 * Calculates the optimum wake time for a sleep period
+	 * @param start the start of the sleep period
+	 * @param profile the user profile
+	 * @param accumDebt the accumulated sleep debt 
+	 * @param exhaustionLevel the exhaustion level at the start of the period
+	 * @param sleepQuality the sleep quality of the previous period
+	 * @return the optimum waking time
+	 */
 	static int optimumWakingTime(final int start, final Profile profile, final int accumDebt, final ExhaustionLevel exhaustionLevel, 
-			final SleepQuality sleepQuality) {
-		return start + duration(8); // TODO implement
+			final SleepQuality sleepQuality, final int now) {
+		final boolean isMale = profile.getGender() == 0;
+		final int age = TimeUtils.ageFromDateOfBirth(profile.getDateOfBirth(), now);
+		int base = SleepDuration.getDuration(age, isMale);
+		int delta = SleepDelta.getDelta(accumDebt, exhaustionLevel, sleepQuality);
+		
+		return start + base + delta;
 	}
 	
+	/**
+	 * Returns the list of days in a week, starting at the time in the start parameter
+	 * @param start the time when the week starts
+	 * @return the list of week days the correspond to the week
+	 */
 	static List<WeekDay> getWeek(final int start) {
 		final List<WeekDay> week = new ArrayList<WeekDay>(7);
 		int seconds = start;
@@ -172,120 +191,77 @@ public class WeeklyViewUtils {
 		
 		return week;
 	}
-	
-	static int duration(final int hours) {
-		return duration(hours, 0);
-	}
-	
-	static int duration(final int hours, final int minutes) {
-		return hours * 60 + minutes;
-	}
-	
 }
 
+class SleepDelta {
+	static final int[][] x_axis = {
+			{ -duration(1, 30), -duration(1), -duration(0, 30), 0, duration(0, 30), duration(1), duration(1, 30) },
+			{ -duration(1, 10), -duration(0, 50), -duration(0, 30), 0, duration(0, 30), duration(1), duration(1, 30) },
+			{ -duration(1), -duration(0, 45), -duration(0, 30), 0, duration(0, 30), duration(1, 15), duration(2) }
+	};
+	static final int[][] y_axis = {
+			{ duration(1, 10), duration(0, 50), duration(0, 30), 0, -duration(0, 10), -duration(0, 20), -duration(0, 30) },
+			{ duration(1), duration(0, 40), duration(0, 20), 0, -duration(0, 15), -duration(0, 30), -duration(0, 45) },
+			{ duration(0, 30), duration(0, 20), duration(0, 10), 0, -duration(0, 20), -duration(0, 40), -duration(1) }
+	};
+	
+	public static int getDelta(final int accumDebt, final ExhaustionLevel exhaustionLevel, final SleepQuality sleepQuality) {
+//		if (exhaustionLevel == null || sleepQuality == null) {
+//			return 0;
+//		}
+//		
+//		final int[] x_values = x_axis[exhaustionLevel.getLevel() - 1];
+//		final int[] y_values = y_axis[sleepQuality.getLevel() - 1];
+		
+		return 0;
+	}
+	
+//	private static int getXValue(final int[] values, final int value) {
+//		
+//	}
+}
+
+/**
+ * Represents a week day
+ */
+class WeekDay {
+	final int from;
+	final int until;
+
+	public WeekDay(final int from, final int until) {
+		super();
+		this.from = from;
+		this.until = until;
+	}
+}
+
+/**
+ * Represents a day in the bar chart
+ */
+class ChartDay {
+	final int debt;
+	final int accumulatedDebt;
+	final int optimumWakingTime;
+	final List<DayRecord> records;
+	
+	public ChartDay(int debt, int accumulatedDebt, int optimumWakingTime, List<DayRecord> records) {
+		super();
+		this.debt = debt;
+		this.accumulatedDebt = accumulatedDebt;
+		this.optimumWakingTime = optimumWakingTime;
+		this.records = records;
+	}
+}
+
+/**
+ * Enumeration of the bar chart series types
+ */
 enum SeriesType {
 	WAKE,
 	SLEEP,
 	UNDERSLEEP,
 	OVERSLEEP
 }
-
-enum ExhaustionLevel {
-	LOW(1),
-	MEDIUM(2),
-	HIGH(3);
-	
-	final int level;
-
-	private ExhaustionLevel(int level) {
-		this.level = level;
-	}
-	
-	static ExhaustionLevel fromInt(final int level) {
-		switch (level) {
-		case 1: return LOW;
-		case 2: return MEDIUM;
-		case 3: return HIGH;
-		default: throw new IllegalArgumentException("Invalid level");
-		}
-	}
-}
-
-enum SleepQuality {
-	LOW(1),
-	MEDIUM(2),
-	HIGH(3);
-	
-	final int level;
-
-	private SleepQuality(int level) {
-		this.level = level;
-	}
-	
-	static SleepQuality fromInt(final int quality) {
-		switch (quality) {
-		case 1: return LOW;
-		case 2: return MEDIUM;
-		case 3: return HIGH;
-		default: throw new IllegalArgumentException("Invalid quality");
-		}
-	}
-}
-
-class SleepDuration {
-	final int minAge, maxAge, minMale, maxMale, minFemale, maxFemale;
-	
-	private SleepDuration(int minAge, int maxAge, int minMale,
-			int maxMale, int minFemale, int maxFemale) {
-		this.minAge = minAge;
-		this.maxAge = maxAge;
-		this.minMale = minMale;
-		this.maxMale = maxMale;
-		this.minFemale = minFemale;
-		this.maxFemale = maxFemale;
-	}
-	
-	private static SleepDuration[] durations;
-	
-	boolean contains(final int age) {
-		return age >= minAge && age <= maxAge;
-	}
-	
-	int meanDuration(final boolean male) {
-		return male ? mean(minMale, maxMale) : mean(minFemale, maxFemale);
-	}
-	
-	static int mean(final int min, final int max) {
-		return (min + max) / 2;
-	}
-	
-
-	
-	static {
-		durations = new SleepDuration[3];
-		durations[0] = new SleepDuration(13, 18, WeeklyViewUtils.duration(8), duration(9), duration(8), duration(9));
-		durations[1] = new SleepDuration(19, 65, duration(7), duration(8), duration(7, 30), duration(8, 30));
-		durations[2] = new SleepDuration(66, 120, duration(8), duration(9), duration(8, 30), duration(9, 30));
-	}
-	
-	static float getDuration(final int age, final boolean male) {
-		for(int i = 0; i < durations.length; i++) {
-			final SleepDuration duration = durations[i];
-			if (duration.contains(age)) {
-				return duration.meanDuration(male);
-			}
-		}
-		
-		throw new IllegalArgumentException("Invalid age");
-	}
-	
-}
-
-class ExhaustionLevelDelta {
-	
-}
-
-
 
 class SeriesValue {
 	final int value;

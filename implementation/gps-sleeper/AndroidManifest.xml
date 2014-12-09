@@ -10,7 +10,7 @@
 
     <application
         android:allowBackup="true"
-        android:name="SleeperApp"
+        android:name="pt.isec.gps.g22.sleeper.core.SleeperApp"
         android:icon="@drawable/icsleeper"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >

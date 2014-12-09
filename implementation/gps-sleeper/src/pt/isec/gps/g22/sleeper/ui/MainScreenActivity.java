@@ -1,15 +1,12 @@
 package pt.isec.gps.g22.sleeper.ui;
 
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
-import pt.isec.gps.g22.sleeper.dal.ProfileDAOImpl;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -53,8 +50,8 @@ public class MainScreenActivity extends Activity {
             @Override
             public void onClick(View v) {
             	if(sleeper.profileDefined()) {
-            		//Intent intent=new Intent(MainScreenActivity.this, WeeklyView.class);
-            		//startActivity(intent);
+            		Intent intent=new Intent(MainScreenActivity.this, WeeklyViewActivity.class);
+            		startActivity(intent);
             	} else {
             		profileNotDefinedToast();
             	}

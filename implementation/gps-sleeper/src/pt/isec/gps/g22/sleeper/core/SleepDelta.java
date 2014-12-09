@@ -25,7 +25,7 @@ public class SleepDelta {
 	 * @param sleepQuality the previous day sleep quality
 	 * @return the sleep delta
 	 */
-	public static int getDelta(final int accumDebt, final ExhaustionLevel exhaustionLevel, final SleepQuality sleepQuality) {
+	public static int getDelta(final long accumDebt, final ExhaustionLevel exhaustionLevel, final SleepQuality sleepQuality) {
 		if (exhaustionLevel == null || sleepQuality == null) {
 			return 0;
 		}
@@ -45,7 +45,7 @@ public class SleepDelta {
 	 * @param value the value
 	 * @return the x value
 	 */
-	private static int getXValue(final int[] values, final int value) {
+	private static int getXValue(final int[] values, final long value) {
 		if (value <= values[0]) {
 			return 0;
 		} else if (value > values[0] && value <= values[1]) {

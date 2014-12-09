@@ -107,15 +107,14 @@ public class DayRecordDAOImpl implements DayRecordDAO {
 	public List<DayRecord> getRecords(final long start, final long end) {
 		db = dbHelper.getWritableDatabase();
 		
-		List<DayRecord> dayRecordList = null;
         String query = "SELECT * FROM " + DayRecord.TABLE_NAME; 
         		query += " WHERE " + DayRecord.COLUMN_WAKEUPDATE + " >= '" + start + " ' AND ";
         		query += DayRecord.COLUMN_SLEEPDATE + " <= '" + end + "';";
 
         Cursor cursor = db.rawQuery(query,null);
 
+        final List<DayRecord> dayRecordList = new ArrayList<DayRecord>();
         if(cursor.getCount() > 0) {
-            dayRecordList = new ArrayList<DayRecord>();
             cursor.moveToFirst();
             while(!cursor.isAfterLast()) {
                 dayRecordList.add(getDayRecord(cursor));

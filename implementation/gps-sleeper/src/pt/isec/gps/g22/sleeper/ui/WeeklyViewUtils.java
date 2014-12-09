@@ -75,7 +75,7 @@ public class WeeklyViewUtils {
 	static ChartDay[] getChartDays(final Profile profile, final List<DayRecord> records, final List<WeekDay> weekDays, final long now) {
 		final ChartDay[] chartDays = new ChartDay[weekDays.size()];
 		
-		int accumDebt = 0;
+		long accumDebt = 0;
 		for(int i = 0; i < records.size(); i++) {
 			/*
 			 * Determine which records belong to the day
@@ -114,6 +114,20 @@ public class WeeklyViewUtils {
 			chartDays[i] = new ChartDay(debt, accumDebt, optimumWakingTime, dayRecords);
 			
 			accumDebt += debt;
+		}
+		
+		// Instantiate the days that don't have 
+		accumDebt = 0;
+		for (int i = 0; i < chartDays.length; i++) {
+			if (i == 0) {
+				accumDebt = 0;
+			} else {
+				accumDebt = chartDays[i - 1].accumulatedDebt;
+			}
+			
+			if (chartDays[i] == null) {
+				chartDays[i] = new ChartDay(0, 0, 0, new ArrayList<DayRecord>());
+			}
 		}
 		
 		return chartDays;
@@ -312,7 +326,7 @@ public class WeeklyViewUtils {
 	 * @param sleepQuality the sleep quality of the previous period
 	 * @return the optimum waking time
 	 */
-	static long optimumWakingTime(final long start, final Profile profile, final int accumDebt, final ExhaustionLevel exhaustionLevel, 
+	static long optimumWakingTime(final long start, final Profile profile, final long accumDebt, final ExhaustionLevel exhaustionLevel, 
 			final SleepQuality sleepQuality, final long now) {
 		final boolean isMale = profile.getGender() == 0;
 		final long age = TimeUtils.ageFromDateOfBirth(profile.getDateOfBirth(), now);
@@ -362,7 +376,7 @@ class ChartDay {
 	final long optimumWakingTime;
 	final List<DayRecord> records;
 	
-	public ChartDay(long debt, long accumulatedDebt, long optimumWakingTime, List<DayRecord> records) {
+	public ChartDay(final long debt, final long accumulatedDebt, final long optimumWakingTime, final List<DayRecord> records) {
 		super();
 		this.debt = debt;
 		this.accumulatedDebt = accumulatedDebt;

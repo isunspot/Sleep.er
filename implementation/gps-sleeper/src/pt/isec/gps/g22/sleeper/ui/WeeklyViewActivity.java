@@ -245,8 +245,8 @@ public class WeeklyViewActivity extends Activity {
 		txtViewMaxHours.setText(Long.toString(maxTimeSleptInADay));
 		txtViewMinHours.setText(Long.toString(minTimeSleptInADay));
 		txtViewSleepDebt.setText(Long.toString(weekSleepDebt));
-		txtViewAvgExhaustion.setText(Integer.toString(averageExhaustionLevel.getLevel()));
-		txtViewAvgSleepQuality.setText(Integer.toString(averageSleepQuality.getLevel()));
+		txtViewAvgExhaustion.setText(averageExhaustionLevel == null ? "" : Integer.toString(averageExhaustionLevel.getLevel()));
+		txtViewAvgSleepQuality.setText(averageSleepQuality == null ? "" : Integer.toString(averageSleepQuality.getLevel()));
 		
 		// iterate through the days
 		for (int i = 0; i < dayValuesList.size(); i++) {

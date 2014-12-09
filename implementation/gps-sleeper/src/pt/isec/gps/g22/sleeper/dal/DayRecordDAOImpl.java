@@ -21,7 +21,7 @@ public class DayRecordDAOImpl implements DayRecordDAO {
     public List<DayRecord> getAllRecords() {
         db = dbHelper.getReadableDatabase();
         List<DayRecord> dayRecordList = null;
-        String query = "SELECT " + "*" + "FROM " + DayRecord.TABLE_NAME + ";";
+        String query = "SELECT * FROM " + DayRecord.TABLE_NAME + ";";
 
         Cursor cursor = db.rawQuery(query,null);
 
@@ -41,7 +41,8 @@ public class DayRecordDAOImpl implements DayRecordDAO {
     public DayRecord loadDayRecord(int id) {
         db = dbHelper.getReadableDatabase();
         DayRecord dayRecord = null;
-        String query = "SELECT " + "*" + "FROM " + DayRecord.TABLE_NAME + " WHERE " + DayRecord.COLUMN_ID + " = '" + id + "';";
+        String query = "SELECT * FROM " + DayRecord.TABLE_NAME + " WHERE " + 
+        DayRecord.COLUMN_ID + " = '" + id + "';";
 
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.getCount() > 0) {
@@ -107,9 +108,9 @@ public class DayRecordDAOImpl implements DayRecordDAO {
 		db = dbHelper.getWritableDatabase();
 		
 		List<DayRecord> dayRecordList = null;
-        String query = "SELECT " + "*" + "FROM " + DayRecord.TABLE_NAME; 
+        String query = "SELECT * FROM " + DayRecord.TABLE_NAME; 
         		query += " WHERE " + DayRecord.COLUMN_WAKEUPDATE + " >= '" + start + " ' AND ";
-        		query += " " + DayRecord.COLUMN_SLEEPDATE + "<= '" + end + "+;";
+        		query += DayRecord.COLUMN_SLEEPDATE + " <= '" + end + "';";
 
         Cursor cursor = db.rawQuery(query,null);
 

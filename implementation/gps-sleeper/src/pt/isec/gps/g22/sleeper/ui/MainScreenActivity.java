@@ -50,7 +50,7 @@ public class MainScreenActivity extends Activity {
             @Override
             public void onClick(View v) {
             	if(sleeper.profileDefined()) {
-            		Intent intent=new Intent(MainScreenActivity.this, WeeklyViewActivity.class);
+            		Intent intent = new Intent(MainScreenActivity.this, WeeklyViewActivity.class);
             		startActivity(intent);
             	} else {
             		profileNotDefinedToast();

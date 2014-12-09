@@ -33,6 +33,8 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
 
+import android.widget.Toast;
+
 import com.androidplot.ui.SeriesRenderer;
 import com.androidplot.xy.BarFormatter;
 import com.androidplot.xy.BarRenderer;
@@ -51,6 +53,9 @@ public class WeeklyViewActivity extends Activity {
 	private DayRecordDAO dayRecordDAO;
 	private ProfileDAO profileDAO;
 	private XYPlot plot;
+	
+	private float x1,x2;
+	static final int MIN_DISTANCE = 150;
 	
 	private long weekStart;
 	private List<List<SeriesValue>> dayValuesList;
@@ -244,6 +249,39 @@ public class WeeklyViewActivity extends Activity {
 		bindValues();
 	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			x1 = event.getX();
+			break;
+		case MotionEvent.ACTION_UP:
+			x2 = event.getX();
+			float deltaX = x2 - x1;
+
+			if (Math.abs(deltaX) > MIN_DISTANCE) {
+				// Left to Right swipe action
+				if (x2 > x1) {
+					weekStart -= WeeklyViewUtils.WEEK_SECONDS;
+					loadValues(weekStart);
+					bindValues();
+				}
+
+				// Right to left swipe action
+				else {
+					weekStart += WeeklyViewUtils.WEEK_SECONDS;
+					loadValues(weekStart);
+					bindValues();
+				}
+
+			} else {
+				// consider as something else - a screen tap for example
+			}
+			break;
+		}
+		return super.onTouchEvent(event);
+	}
+	
 	private void loadValues(final long now) {
 		final Profile profile = profileDAO.loadProfile();
 		weekStart = getWeekStart(now, profile.getFirstHourOfTheDay() * WeeklyViewUtils.MINUTE_SECONDS);

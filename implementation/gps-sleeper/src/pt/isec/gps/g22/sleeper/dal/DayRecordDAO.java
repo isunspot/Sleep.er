@@ -62,5 +62,5 @@ public interface DayRecordDAO {
 	 * 				the start day of week
 	 * @returnReturns a week list of dayRecords
 	 */
-	List<DayRecord> getWeekRecords(int weekStart);
+	List<DayRecord> getWeekRecords(long weekStart, long weekFinal);
 }

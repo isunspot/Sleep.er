@@ -20,7 +20,7 @@ public class SleepDuration {
 	
 	private static SleepDuration[] durations;
 	
-	boolean contains(final int age) {
+	boolean contains(final long age) {
 		return age >= minAge && age <= maxAge;
 	}
 	
@@ -39,7 +39,7 @@ public class SleepDuration {
 		durations[2] = new SleepDuration(66, 120, duration(8), duration(9), duration(8, 30), duration(9, 30));
 	}
 	
-	public static int getDuration(final int age, final boolean male) {
+	public static long getDuration(final long age, final boolean male) {
 		for(int i = 0; i < durations.length; i++) {
 			final SleepDuration duration = durations[i];
 			if (duration.contains(age)) {

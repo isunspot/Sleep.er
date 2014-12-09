@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-<<<<<<< HEAD
     <string name="app_name">Sleep.er</string>
     <string name="strLogo">logo</string>
     <string name="title_activity_weekly_view">WeeklyViewActivity</string>

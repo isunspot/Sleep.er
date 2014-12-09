@@ -12,7 +12,7 @@ public class TimeUtils {
 		return hours * 60 + minutes;
 	}
 	
-	public static long ageFromDateOfBirth(final int dateOfBirth, final long now) {
+	public static long ageFromDateOfBirth(final long dateOfBirth, final long now) {
 		if (dateOfBirth > now) {
 			throw new IllegalArgumentException("The date of birth cannot be in the future");
 		}

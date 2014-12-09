@@ -1,6 +1,7 @@
 package pt.isec.gps.g22.sleeper.ui;
 
 import java.util.Calendar;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,27 +23,31 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import pt.isec.gps.g22.sleeper.core.Profile;
+import pt.isec.gps.g22.sleeper.ui.SleeperApp;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAOImpl;
 import pt.isec.gps.g22.sleeper.ui.R;
 
 public class ProfileActivity extends Activity {
     
-    ProfileDAOImpl profileDAOImpl;
-    Profile profile;
-    
+	SleeperApp sleeper;
+	Profile profile;
+	
     TextView tvDateOfBirth,tvDateOfBirthValue,tvGender,tvGenderValue,tvFirstHour,tvFirstHourValue,tvSave;
     LinearLayout layoutDateOfBirth, layoutGender, layoutFirstHour, layoutSave;
     Typeface tf,tfBold;
     
-	long unixtime = 0;
+	long dateOfBirth = 0;
     int gender = 0;
-    CharSequence options[] = {"Male","Female"};
-    int time = 0;
+    CharSequence genders[] = {"Male","Female"};
+    int firstHourOfTheDay = 0;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        
+        sleeper = (SleeperApp)getApplication();
+    	profile = sleeper.getProfile();
         
         tvDateOfBirth = (TextView) findViewById(R.id.tvDateOfBirth);
         tvGender = (TextView) findViewById(R.id.tvGender);
@@ -55,7 +60,15 @@ public class ProfileActivity extends Activity {
         hideActionBar();
         setFonts();
         
-        tvDateOfBirthValue.setText(getDate(unixtime));
+        if(sleeper.profileDefined()) {
+        	dateOfBirth = profile.getDateOfBirth();
+        	gender = profile.getGender();
+        	firstHourOfTheDay = profile.getFirstHourOfTheDay();
+        	
+            tvDateOfBirthValue.setText(getDate(dateOfBirth));
+            tvGenderValue.setText(genders[gender]);
+            tvFirstHourValue.setText(getTime(firstHourOfTheDay));
+        }
         
         layoutDateOfBirth = (LinearLayout)findViewById(R.id.LayoutDateOfBirth);
         layoutGender = (LinearLayout)findViewById(R.id.LayoutGender);
@@ -89,7 +102,16 @@ public class ProfileActivity extends Activity {
         layoutSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+        	    profile.setDateOfBirth(dateOfBirth);
+        	    profile.setGender(gender);
+        	    profile.setFirstHourOfTheDay(firstHourOfTheDay);
         	    
+        	    if(sleeper.profileDefined())
+        	    	sleeper.getProfileDAOImpl().updateProfile(profile);
+        	    else
+        	    	sleeper.getProfileDAOImpl().insertProfile(profile);
+        	    sleeper.defineProfile();
+        	    finish();
             }
         });
     }
@@ -152,7 +174,7 @@ public class ProfileActivity extends Activity {
     	public Dialog onCreateDialog(Bundle savedInstanceState) {
     		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
     		builder.setTitle(R.string.strGender)
-    		.setItems(options, new DialogInterface.OnClickListener() {
+    		.setItems(genders, new DialogInterface.OnClickListener() {
     			public void onClick(DialogInterface dialog, int which) {
     				if(which == 0) {
     					gender = 0;
@@ -161,7 +183,7 @@ public class ProfileActivity extends Activity {
     						gender = 1;
     					}
     				}
-    				tvGenderValue.setText(options[gender]);
+    				tvGenderValue.setText(genders[gender]);
     			}
     		});		
     		return builder.create();
@@ -200,8 +222,8 @@ public class ProfileActivity extends Activity {
     	}
 
     	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-    		time = convertToMinutes(hourOfDay,minute);
-    		tvFirstHourValue.setText(getTime(time));
+    		firstHourOfTheDay = convertToMinutes(hourOfDay,minute);
+    		tvFirstHourValue.setText(getTime(firstHourOfTheDay));
     	}
     	
         @Override
@@ -244,9 +266,9 @@ public class ProfileActivity extends Activity {
     	}
     	
     	public void onDateSet(DatePicker view, int year, int month, int day) {
-    		unixtime = dateToUnixtime(year,month,day);
-    		Log.d("UnixT:",String.valueOf(unixtime));
-    		String s = getDate(unixtime);
+    		dateOfBirth = dateToUnixtime(year,month,day);
+    		Log.d("UnixT:",String.valueOf(dateOfBirth));
+    		String s = getDate(dateOfBirth);
     		Log.d("Value",s);
             tvDateOfBirthValue.setText(s);
     	}

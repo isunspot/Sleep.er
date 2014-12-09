@@ -13,7 +13,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String CREATE_PROFILE_TABLE = "CREATE TABLE " + Profile.TABLE_NAME + "(" +
             Profile.COLUMN_ID + " INTEGER PRIMARY KEY," +
             Profile.COLUMN_GENDER + " INTEGER NOT NULL, " +
-            Profile.COLUMN_DATEOFBIRTH + " INTEGER NOT NULL CHECK("+Profile.COLUMN_DATEOFBIRTH+">0), " +
+            Profile.COLUMN_DATEOFBIRTH + " INTEGER NOT NULL, " +
             Profile.COLUMN_FIRSTHOUROFTHEDAY + " INTEGER NOT NULL" +
             ")";
 

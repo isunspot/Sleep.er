@@ -26,6 +26,7 @@
     <string name="title_activity_dismiss_alarm">DismissAlarmActivity</string>
     <string name="DismissAlarm">Dismiss</string>
     <string name="title_activity_daily_record">DailyRecord</string>
+    <string name="notDefined">N/A</string>
     <string name="strProfile">Profile</string>
     <string name="icProfile">Profile Icon</string>
     <string name="icDateOfBirth">Date Of Birth Icon</string>

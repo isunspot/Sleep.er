@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">gps-sleeper</string>
+    <string name="app_name">Sleep.er</string>
     <string name="strLogo">logo</string>
     <string name="title_activity_profile">Profile</string>
     <string name="strBirthDay">Date of Birth</string>
@@ -14,16 +14,16 @@
     <string name="strSave">Save</string>
     <string name="strNext">Next</string>
     <string name="strClose">Close</string>
-    <string name="title_activity_main_screen">MainScreenActivity</string>
+    <string name="title_activity_main_screen">Main Screen</string>
     <string name="strUserProfile">User Profile</string>
     <string name="strSetAlarm">Set Alarm</string>
     <string name="strWeeklyView">Weekly View</string>
     <string name="strSleepTips">Sleep Tips</string>
     <string name="title_activity_generic_tips">GenericTips</string>
     <string name="strGenericTip">Tip</string>
-    <string name="title_activity_set_alarm">SetAlarmActivity</string>
+    <string name="title_activity_set_alarm">Set Alarm</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_dismiss_alarm">DismissAlarmActivity</string>
+    <string name="title_activity_dismiss_alarm">Dismiss Alarm</string>
     <string name="DismissAlarm">Dismiss</string>
     <string name="title_activity_daily_record">DailyRecord</string>
     <string name="notDefined">N/A</string>
@@ -31,5 +31,8 @@
     <string name="icProfile">Profile Icon</string>
     <string name="icDateOfBirth">Date Of Birth Icon</string>
     <string name="icGender">Gender Icon</string>
+    <string name="icSetAlarm">Set Alarm Icon</string>
+    <string name="icWeeklyView">Set Alarm Icon</string>
+    <string name="icGenericTips">Generic Tips Icon</string>
     <string name="icFirstHour">First Hour Icon</string>
    </resources>

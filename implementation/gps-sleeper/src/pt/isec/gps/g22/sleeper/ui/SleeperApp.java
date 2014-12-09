@@ -10,7 +10,7 @@ public class SleeperApp extends Application{
 	ProfileDAOImpl profileDAOImpl;
 	DayRecordDAOImpl dayRecordDAOImpl;
 	Profile profile = null;
-	boolean profileDefined;
+	private boolean profileDefined;
 	
 	public SleeperApp() {
 		profileDAOImpl = new ProfileDAOImpl(SleeperApp.this);

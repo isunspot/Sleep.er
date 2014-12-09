@@ -7,46 +7,137 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:background="#bdc3c7"
+        android:layout_weight="1"
         android:orientation="vertical" >
 
-        <ImageView
-            android:id="@+id/imageView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/sleeper" android:contentDescription="@string/strLogo"/>
-        
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_weight="1" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/LayoutSetAlarm"
+                android:layout_weight="1"
+                android:background="@drawable/layout_bg_sa"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/btUserProfile"
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/icSetAlarm"
+                    android:src="@drawable/bell" />
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="6dp"
+                    android:text="@string/strSetAlarm"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+               	android:id="@+id/LayoutWeeklyView"
+                android:layout_weight="1"
+                android:background="@drawable/layout_bg_wv"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/icWeeklyView"
+                    android:src="@drawable/statistics" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="6dp"
+                    android:text="@string/strWeeklyView"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="@string/strUserProfile" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/btSetAlarm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/strSetAlarm" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/btWeeklyView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/strWeeklyView" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/LayoutGenericTips"
+                    android:layout_weight="1"
+                    android:background="@drawable/layout_bg_gt"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/btSleepTips"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/strSleepTips" />
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/icGenericTips"
+                        android:src="@drawable/book" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="6dp"
+                        android:text="@string/strSleepTips"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/LayoutProfile"
+                    android:layout_weight="1"
+                    android:background="@drawable/layout_bg_pf"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/icProfile"
+                        android:src="@drawable/usertrans" />
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="6dp"
+                        android:text="@string/strProfile"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -19,7 +19,7 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_marginTop="35dp"
             android:contentDescription="@string/icProfile"
-            android:src="@drawable/userbigxh" />
+            android:src="@drawable/userbig" />
 
         <TextView
             android:id="@+id/tvProfile"
@@ -54,7 +54,7 @@
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
                 android:contentDescription="@string/icDateOfBirth"
-                android:src="@drawable/birthdaycakehd" />
+                android:src="@drawable/birthdaycake" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -114,7 +114,7 @@
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
                 android:contentDescription="@string/icGender"
-                android:src="@drawable/userhd" />
+                android:src="@drawable/user" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -174,7 +174,7 @@
                 android:layout_marginLeft="22dp"
                 android:layout_marginRight="22dp"
                 android:contentDescription="@string/icFirstHour"
-                android:src="@drawable/clockhd" />
+                android:src="@drawable/clock" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -227,7 +227,7 @@
         android:id="@+id/LayoutSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alpha="0.60"
+        android:alpha="0.40"
         android:background="#27ae60"
         android:gravity="center_horizontal"
         android:orientation="horizontal" >

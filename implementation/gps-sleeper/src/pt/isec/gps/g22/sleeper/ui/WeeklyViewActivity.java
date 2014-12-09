@@ -24,11 +24,13 @@ import pt.isec.gps.g22.sleeper.core.SleepQuality;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAO;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAO;
-import pt.isec.gps.g22.sleeper.dal.ProfileDAOImpl;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.TextView;
 
 import com.androidplot.ui.SeriesRenderer;
@@ -155,7 +157,8 @@ public class WeeklyViewActivity extends Activity {
 //				}});
 //				add(new ArrayList<SeriesValue>() {{
 //					add(new SeriesValue(1440, SeriesType.WAKE));
-//					add(new SeriesValue(1440 - 30, SeriesType.SLEEP));
+//					add(new SeriesValue(1440 - 30, SeriesType.SLEEP));*/
+
 //					add(new SeriesValue(1440 - 8 * 60 - 30, SeriesType.WAKE));
 //				}});
 //		}};
@@ -215,6 +218,23 @@ public class WeeklyViewActivity extends Activity {
 			@Override
 			public Object parseObject(String string, ParsePosition position) {
 				return null;
+			}
+        	
+        });
+        
+        plot.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(final View v, final MotionEvent event) {
+				final float value = event.getAxisValue(MotionEvent.AXIS_X);
+				try {
+					final int x = new Double(plot.getGraphWidget().getXVal(value)).intValue();
+					// TODO Call daily view activity
+					
+					return true;	
+				} catch (final IllegalArgumentException ex) {
+					return false;
+				}
 			}
         	
         });

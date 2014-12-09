@@ -95,7 +95,7 @@ public class DailyRecordActivity extends Activity {
         cal.set(Calendar.SECOND, 0); 
         
         
-		tempRecord.setSleepDate((int)cal.getTimeInMillis());
+		tempRecord.setSleepDate((int)cal.getTimeInMillis()/1000);
 		tempRecord.setExhaustion((int) rbExhaustion.getRating());
 		
 		hour = tpWake.getCurrentHour();
@@ -109,7 +109,7 @@ public class DailyRecordActivity extends Activity {
         cal.set(Calendar.MINUTE,min);
         cal.set(Calendar.SECOND, 0);
 		
-		tempRecord.setWakeupDate((int)cal.getTimeInMillis());
+		tempRecord.setWakeupDate((int)cal.getTimeInMillis()/1000);
 		tempRecord.setSleepQuality((int) rbQualitySleep.getRating());
 		
 		return tempRecord;
@@ -122,12 +122,12 @@ public class DailyRecordActivity extends Activity {
 			if(dayRecord!=null)
 			{
 				Calendar calendar = Calendar.getInstance();
-			    calendar.setTimeInMillis(dayRecord.getSleepDate());
+			    calendar.setTimeInMillis(dayRecord.getSleepDate()*1000);
 			    
 				tpSleep.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
 				tpSleep.setCurrentMinute(calendar.get(Calendar.MINUTE));
 				
-				calendar.setTimeInMillis(dayRecord.getWakeupDate());
+				calendar.setTimeInMillis(dayRecord.getWakeupDate()*1000);
 				tpWake.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
 				tpWake.setCurrentMinute(calendar.get(Calendar.MINUTE));
 			}

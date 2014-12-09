@@ -101,4 +101,28 @@ public class DayRecordDAOImpl implements DayRecordDAO {
         db.close();
         return affectedRows;
     }
+
+	@Override
+	public List<DayRecord> getWeekRecords(final long weekStart, final long weekFinal) {
+		db = dbHelper.getWritableDatabase();
+		
+		List<DayRecord> dayRecordList = null;
+        String query = "SELECT " + "*" + "FROM " + DayRecord.TABLE_NAME; 
+        		query += " WHERE " + DayRecord.COLUMN_WAKEUPDATE + " >= '" + weekStart + " ' AND ";
+        		query += " " + DayRecord.COLUMN_SLEEPDATE + "<= '" + weekFinal + "+;";
+
+        Cursor cursor = db.rawQuery(query,null);
+
+        if(cursor.getCount() > 0) {
+            dayRecordList = new ArrayList<DayRecord>();
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                dayRecordList.add(getDayRecord(cursor));
+                cursor.moveToNext();
+            }
+        }
+        db.close();
+        
+		return dayRecordList;
+	}
 }

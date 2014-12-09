@@ -58,9 +58,9 @@ public interface DayRecordDAO {
 	int deleteRecord(DayRecord dayRecord);
 	/**
 	 * 
-	 * @param weekStart
-	 * 				the start day of week
-	 * @returnReturns a week list of dayRecords
+	 * @param start the period start
+	 * @param end the period end
+	 * @returnReturns a list of dayRecords
 	 */
-	List<DayRecord> getWeekRecords(long weekStart, long weekFinal);
+	List<DayRecord> getRecords(long start, long end);
 }

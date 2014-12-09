@@ -21,8 +21,8 @@ import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.ExhaustionLevel;
 import pt.isec.gps.g22.sleeper.core.Profile;
 import pt.isec.gps.g22.sleeper.core.SleepQuality;
+import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAO;
-import pt.isec.gps.g22.sleeper.dal.DayRecordDAOImpl;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAO;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAOImpl;
 import android.app.Activity;
@@ -80,8 +80,9 @@ public class WeeklyViewActivity extends Activity {
 		/*
 		 * Create the DAOs 
 		 */
-		dayRecordDAO = new DayRecordDAOImpl(this);
-		profileDAO = new ProfileDAOImpl(this);
+		final SleeperApp app = (SleeperApp) getApplication();
+		dayRecordDAO = app.getDayRecordDAO();
+		profileDAO = app.getProfileDAO();
 		
 		/*
 		 * Instantiate the formatters
@@ -227,7 +228,7 @@ public class WeeklyViewActivity extends Activity {
 		final Profile profile = profileDAO.loadProfile();
 		weekStart = getWeekStart(now, profile.getFirstHourOfTheDay() * WeeklyViewUtils.MINUTE_SECONDS);
 		final List<WeekDay> week = getWeek(weekStart);
-		final List<DayRecord> dayRecords = dayRecordDAO.getWeekRecords(weekStart, weekStart + WeeklyViewUtils.WEEK_SECONDS);
+		final List<DayRecord> dayRecords = dayRecordDAO.getRecords(weekStart, weekStart + WeeklyViewUtils.WEEK_SECONDS);
 		final ChartDay[] chartDays = getChartDays(profile, dayRecords, week, now);
 		
 		// Bar chart

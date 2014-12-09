@@ -23,7 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import pt.isec.gps.g22.sleeper.core.Profile;
-import pt.isec.gps.g22.sleeper.ui.SleeperApp;
+import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAOImpl;
 import pt.isec.gps.g22.sleeper.ui.R;
 
@@ -107,9 +107,9 @@ public class ProfileActivity extends Activity {
         	    profile.setFirstHourOfTheDay(firstHourOfTheDay);
         	    
         	    if(sleeper.profileDefined())
-        	    	sleeper.getProfileDAOImpl().updateProfile(profile);
+        	    	sleeper.getProfileDAO().updateProfile(profile);
         	    else
-        	    	sleeper.getProfileDAOImpl().insertProfile(profile);
+        	    	sleeper.getProfileDAO().insertProfile(profile);
         	    sleeper.defineProfile();
         	    finish();
             }

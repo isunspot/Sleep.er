@@ -1,7 +1,7 @@
 package pt.isec.gps.g22.sleeper.ui;
 
+import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAOImpl;
-import pt.isec.gps.g22.sleeper.ui.SleeperApp;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;

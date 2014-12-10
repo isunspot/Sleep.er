@@ -97,10 +97,10 @@ public class WeeklyViewUtils {
 			 */
 			long optimumWakingTime = 0;
 			long debt = 0;
-			if (records.size() == 0) { // didn't sleep
+			if (dayRecords.size() == 0) { // didn't sleep
 				optimumWakingTime = optimumWakingTime(weekDay.from, profile, accumDebt, exhaustionLevel, sleepQuality, now);
 				debt = optimumWakingTime - weekDay.from;
-			} else if (records.size() == 1) { // 1 sleep period
+			} else if (dayRecords.size() == 1) { // 1 sleep period
 				optimumWakingTime = optimumWakingTime(dayRecords.get(0).getSleepDate(), profile, accumDebt, exhaustionLevel, sleepQuality, now);
 				debt = optimumWakingTime - dayRecords.get(0).getWakeupDate();
 			} else { // multiple sleep periods

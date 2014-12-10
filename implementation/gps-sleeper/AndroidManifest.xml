@@ -52,6 +52,10 @@
             android:name=".DailyRecordActivity"
             android:label="@string/title_activity_daily_record" >
         </activity>
+		<activity
+            android:name=".DayView"
+            android:label="@string/title_activity_day_view" >
+        </activity>
     </application>
 
 </manifest>

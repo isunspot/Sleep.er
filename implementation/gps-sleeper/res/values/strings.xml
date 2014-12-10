@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Sleep.er</string>
     <string name="strLogo">logo</string>
     <string name="title_activity_weekly_view">WeeklyViewActivity</string>
@@ -13,6 +14,7 @@
     <string name="strCancel">Cancel</string>
     <string name="strSave">Save</string>
     <string name="strNext">Next</string>
+    <string name="strInsert">Insert</string>
     <string name="strClose">Close</string>
     <string name="title_activity_main_screen">Main Screen</string>
     <string name="strUserProfile">User Profile</string>
@@ -35,4 +37,7 @@
     <string name="icWeeklyView">Set Alarm Icon</string>
     <string name="icGenericTips">Generic Tips Icon</string>
     <string name="icFirstHour">First Hour Icon</string>
-   </resources>
+    <string name="title_activity_day_view">DayView</string>
+    <string name="strDayView">Day:</string>
+
+</resources>

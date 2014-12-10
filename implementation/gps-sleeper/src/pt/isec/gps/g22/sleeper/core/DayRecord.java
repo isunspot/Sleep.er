@@ -8,9 +8,9 @@ package pt.isec.gps.g22.sleeper.core;
  */
 public class DayRecord {
 	private int id;
-	private int sleepDate;
+	private long sleepDate;
 	private int exhaustion; // if unset, 0
-	private int wakeupDate;
+	private long wakeupDate;
 	private int sleepQuality; // if unset, 0
 
 	public static final String TABLE_NAME = "dayrecord";
@@ -23,7 +23,7 @@ public class DayRecord {
 	public DayRecord() {
 	}
 
-	public DayRecord(int sleepDate, int wakeupDate) {
+	public DayRecord(long sleepDate, long wakeupDate) {
 		this.sleepDate = sleepDate;
 		this.wakeupDate = wakeupDate;
 	}
@@ -36,11 +36,11 @@ public class DayRecord {
 		this.id = id;
 	}
 
-	public int getSleepDate() {
+	public long getSleepDate() {
 		return sleepDate;
 	}
 
-	public void setSleepDate(int sleepDate) {
+	public void setSleepDate(long sleepDate) {
 		this.sleepDate = sleepDate;
 	}
 
@@ -52,11 +52,11 @@ public class DayRecord {
 		this.exhaustion = exhaustion;
 	}
 
-	public int getWakeupDate() {
+	public long getWakeupDate() {
 		return wakeupDate;
 	}
 
-	public void setWakeupDate(int wakeupDate) {
+	public void setWakeupDate(long wakeupDate) {
 		this.wakeupDate = wakeupDate;
 	}
 

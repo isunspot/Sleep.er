@@ -95,7 +95,7 @@ public class DailyRecordActivity extends Activity {
         cal.set(Calendar.SECOND, 0); 
         
         
-		tempRecord.setSleepDate((int)cal.getTimeInMillis()/1000);
+		tempRecord.setSleepDate(cal.getTimeInMillis()/1000);
 		tempRecord.setExhaustion((int) rbExhaustion.getRating());
 		
 		hour = tpWake.getCurrentHour();
@@ -109,7 +109,7 @@ public class DailyRecordActivity extends Activity {
         cal.set(Calendar.MINUTE,min);
         cal.set(Calendar.SECOND, 0);
 		
-		tempRecord.setWakeupDate((int)cal.getTimeInMillis()/1000);
+		tempRecord.setWakeupDate(cal.getTimeInMillis()/1000);
 		tempRecord.setSleepQuality((int) rbQualitySleep.getRating());
 		
 		return tempRecord;

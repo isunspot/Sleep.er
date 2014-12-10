@@ -1,18 +1,13 @@
 package pt.isec.gps.g22.sleeper.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.core.TimeUtils;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,6 +34,7 @@ public class DayView extends Activity {
 	    tvDay.setText(TimeUtils.getDate(day));
 	    tvInsert = (TextView) findViewById(R.id.tvInsert);
 
+	    hideActionBar();
 	    setInfo();
 	    
 	    tvInsert.setOnClickListener(new OnClickListener() {
@@ -55,5 +51,10 @@ public class DayView extends Activity {
 	      CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(),sleeper,sleeper.getDayRecordDAO().getRecords(day, day+86400));
 	      dayViewList.setAdapter(customAdapter);
 	}
+	
+    private void hideActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.hide();
+    }
 	
 }

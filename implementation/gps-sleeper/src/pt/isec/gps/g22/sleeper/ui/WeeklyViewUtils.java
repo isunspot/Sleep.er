@@ -76,7 +76,7 @@ public class WeeklyViewUtils {
 		final ChartDay[] chartDays = new ChartDay[weekDays.size()];
 		
 		long accumDebt = 0;
-		for(int i = 0; i < records.size(); i++) {
+		for(int i = 0; i < weekDays.size(); i++) {
 			/*
 			 * Determine which records belong to the day
 			 */

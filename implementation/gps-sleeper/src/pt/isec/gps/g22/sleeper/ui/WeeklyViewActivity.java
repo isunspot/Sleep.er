@@ -80,8 +80,6 @@ public class WeeklyViewActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Log.d("*************", "************");
-		
 		setContentView(R.layout.activity_weekly_view);
 
 		/*

@@ -297,7 +297,7 @@ public class WeeklyViewUtils {
 	/**
 	 * Returns the list of series values that correspond to a day record
 	 * @param record the day records
-	 * @param optimumWakingTime the optimum waking time for the period in the record
+	 * @param optimumWakingTime the optimum waking time for the period int in the record
 	 * @return the list of series values that matches the record
 	 */
 	static List<SeriesValue> recordValues(final DayRecord record, final long optimumWakingTime) {

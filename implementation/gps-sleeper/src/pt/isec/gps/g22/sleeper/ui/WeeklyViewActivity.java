@@ -24,12 +24,16 @@ import pt.isec.gps.g22.sleeper.core.SleepQuality;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAO;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAO;
-import pt.isec.gps.g22.sleeper.dal.ProfileDAOImpl;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.TextView;
+
+import android.widget.Toast;
 
 import com.androidplot.ui.SeriesRenderer;
 import com.androidplot.xy.BarFormatter;
@@ -49,6 +53,9 @@ public class WeeklyViewActivity extends Activity {
 	private DayRecordDAO dayRecordDAO;
 	private ProfileDAO profileDAO;
 	private XYPlot plot;
+	
+	private float x1,x2;
+	static final int MIN_DISTANCE = 150;
 	
 	private long weekStart;
 	private List<List<SeriesValue>> dayValuesList;
@@ -155,7 +162,8 @@ public class WeeklyViewActivity extends Activity {
 //				}});
 //				add(new ArrayList<SeriesValue>() {{
 //					add(new SeriesValue(1440, SeriesType.WAKE));
-//					add(new SeriesValue(1440 - 30, SeriesType.SLEEP));
+//					add(new SeriesValue(1440 - 30, SeriesType.SLEEP));*/
+
 //					add(new SeriesValue(1440 - 8 * 60 - 30, SeriesType.WAKE));
 //				}});
 //		}};
@@ -218,12 +226,62 @@ public class WeeklyViewActivity extends Activity {
 			}
         	
         });
+        
+        plot.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(final View v, final MotionEvent event) {
+				final float value = event.getAxisValue(MotionEvent.AXIS_X);
+				try {
+					final int x = new Double(plot.getGraphWidget().getXVal(value)).intValue();
+					// TODO Call daily view activity
+					
+					return true;	
+				} catch (final IllegalArgumentException ex) {
+					return false;
+				}
+			}
+        	
+        });
 		
 		final long now = new Date().getTime() / 1000;
 		loadValues(now);
 		bindValues();
 	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			x1 = event.getX();
+			break;
+		case MotionEvent.ACTION_UP:
+			x2 = event.getX();
+			float deltaX = x2 - x1;
+
+			if (Math.abs(deltaX) > MIN_DISTANCE) {
+				// Left to Right swipe action
+				if (x2 > x1) {
+					weekStart -= WeeklyViewUtils.WEEK_SECONDS;
+					loadValues(weekStart);
+					bindValues();
+				}
+
+				// Right to left swipe action
+				else {
+					weekStart += WeeklyViewUtils.WEEK_SECONDS;
+					loadValues(weekStart);
+					bindValues();
+				}
+
+			} else {
+				// consider as something else - a screen tap for example
+			}
+			break;
+		}
+		return super.onTouchEvent(event);
+	}
+	
 	private void loadValues(final long now) {
 		final Profile profile = profileDAO.loadProfile();
 		weekStart = getWeekStart(now, profile.getFirstHourOfTheDay() * WeeklyViewUtils.MINUTE_SECONDS);

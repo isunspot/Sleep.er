@@ -54,8 +54,8 @@ public class SetAlarmActivity extends Activity {
         cal.set(Calendar.SECOND, 0);    
 		
         int sleepDate,wakeDate;
-        sleepDate = (int) millis;
-        wakeDate = (int) cal.getTimeInMillis();
+        sleepDate = (int) millis / 1000;
+        wakeDate = (int) cal.getTimeInMillis() / 1000;
         //Insert daily record
 		dayRecord = new DayRecord(sleepDate,wakeDate);
 		dayRecord.setExhaustion((int)rbExhaustion.getRating());

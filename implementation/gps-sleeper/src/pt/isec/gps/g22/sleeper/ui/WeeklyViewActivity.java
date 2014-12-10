@@ -80,12 +80,10 @@ public class WeeklyViewActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Log.d("*************", "************");
-		
 		setContentView(R.layout.activity_weekly_view);
 
 		/*
-		 * Create the DAOs 
+		 * Get the DAOs 
 		 */
 		final SleeperApp app = (SleeperApp) getApplication();
 		dayRecordDAO = app.getDayRecordDAO();
@@ -104,69 +102,6 @@ public class WeeklyViewActivity extends Activity {
 		txtViewSleepDebt = (TextView) findViewById(R.id.txtViewSleepDebt);
 		txtViewAvgExhaustion = (TextView) findViewById(R.id.txtViewAvgExhaustion);
 		txtViewAvgSleepQuality = (TextView) findViewById(R.id.txtViewAvgSleepQuality);
-		
-		// final List<DayRecord> records =
-		// dayRecordDAO.getWeekRecords(weekStart);
-		// final Profile profile = profileDAO.getProfile();
-		// final List<WeekDay> weekDays = WeeklyViewUtils.getWeek(weekStart);
-
-		// final List<List<SeriesValue>> dayValuesList =
-		// WeeklyViewUtils.recordsToSeries(profile, records, weekDays);
-
-//		final List<List<SeriesValue>> dayValuesList = new ArrayList<List<SeriesValue>>();
-//		final Random rand = new Random();
-//		final SeriesType[] types = new SeriesType[] { SeriesType.OVERSLEEP, SeriesType.UNDERSLEEP,  SeriesType.SLEEP,  SeriesType.WAKE }; 
-//		for (int i = 0; i < 7; i++) {
-//			dayValuesList.add(new ArrayList<SeriesValue>() {
-//				{
-//					add(new SeriesValue(1440, types[rand.nextInt(4)]));
-//					int numSeries = rand.nextInt(10);
-//					for (int j = 0; j < numSeries; j++) {
-//						add(new SeriesValue(rand.nextInt(1440), types[rand.nextInt(4)]));
-//					}
-//				}
-//			});	
-//		}
-//		final List<List<SeriesValue>> dayValuesList = new ArrayList<List<SeriesValue>>() {{
-//				add(new ArrayList<SeriesValue>() {{
-//					add(new SeriesValue(1440, SeriesType.WAKE));
-//					add(new SeriesValue(1440 - 60, SeriesType.SLEEP));
-//					add(new SeriesValue(1440 - 8 * 60, SeriesType.WAKE));
-//					add(new SeriesValue(60, SeriesType.SLEEP));
-//				}});
-//				add(new ArrayList<SeriesValue>() {{
-//					add(new SeriesValue(1440, SeriesType.SLEEP));
-//					add(new SeriesValue(1440 - 6 * 60, SeriesType.UNDERSLEEP));
-//					add(new SeriesValue(1440 - 6 * 60 - 30, SeriesType.WAKE));
-//				}});
-//				add(new ArrayList<SeriesValue>() {{
-//					add(new SeriesValue(1440, SeriesType.WAKE));
-//					add(new SeriesValue(1440 - 30, SeriesType.SLEEP));
-//					add(new SeriesValue(1440 - 9 * 60 - 30, SeriesType.WAKE));
-//				}});
-//				add(new ArrayList<SeriesValue>() {{
-//					add(new SeriesValue(1440, SeriesType.WAKE));
-//					add(new SeriesValue(1440 - 60, SeriesType.SLEEP));
-//					add(new SeriesValue(1440 - 7 * 60 - 30, SeriesType.WAKE));	
-//				}});
-//				add(new ArrayList<SeriesValue>() {{Days
-//					add(new SeriesValue(1440, SeriesType.WAKE));
-//					add(new SeriesValue(1440 - 3 * 60, SeriesType.SLEEP));
-//					add(new SeriesValue(1440 - 10 * 60 - 30, SeriesType.OVERSLEEP));
-//					add(new SeriesValue(1440 - 13 * 60 - 30, SeriesType.WAKE));
-//				}});
-//				add(new ArrayList<SeriesValue>() {{
-//					add(new SeriesValue(1440, SeriesType.WAKE));
-//					add(new SeriesValue(1440 - 1 * 60 - 30, SeriesType.SLEEP));
-//					add(new SeriesValue(1440 - 10 * 60, SeriesType.WAKE));
-//				}});
-//				add(new ArrayList<SeriesValue>() {{
-//					add(new SeriesValue(1440, SeriesType.WAKE));
-//					add(new SeriesValue(1440 - 30, SeriesType.SLEEP));*/
-
-//					add(new SeriesValue(1440 - 8 * 60 - 30, SeriesType.WAKE));
-//				}});
-//		}};
 
 		plot = (XYPlot) findViewById(R.id.barPlot);
 		plot.setRangeStep(XYStepMode.INCREMENT_BY_VAL, 3 * 60);
@@ -303,8 +238,8 @@ public class WeeklyViewActivity extends Activity {
 		txtViewMaxHours.setText(Long.toString(maxTimeSleptInADay));
 		txtViewMinHours.setText(Long.toString(minTimeSleptInADay));
 		txtViewSleepDebt.setText(Long.toString(weekSleepDebt));
-		txtViewAvgExhaustion.setText(averageExhaustionLevel == null ? "" : Integer.toString(averageExhaustionLevel.getLevel()));
-		txtViewAvgSleepQuality.setText(averageSleepQuality == null ? "" : Integer.toString(averageSleepQuality.getLevel()));
+		txtViewAvgExhaustion.setText(averageExhaustionLevel == null ? "0" : Integer.toString(averageExhaustionLevel.getLevel()));
+		txtViewAvgSleepQuality.setText(averageSleepQuality == null ? "0" : Integer.toString(averageSleepQuality.getLevel()));
 		
 		// iterate through the days
 		for (int i = 0; i < dayValuesList.size(); i++) {

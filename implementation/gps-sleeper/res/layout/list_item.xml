@@ -6,7 +6,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_weight="1"
+        android:paddingTop="15dp" >
 
         <TextView
             android:id="@+id/tvStartHour"
@@ -29,29 +30,37 @@
             android:color="#1c1c1c" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
 
-            <TextView
-                android:id="@+id/tvEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#2980b9"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="E"
-                android:textSize="15sp" />
+            <LinearLayout
+                android:id="@+id/LayoutEdit"   
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+				android:background="#3D8EB9" >
 
-            <TextView
-                android:id="@+id/tvDelete"
-                android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/editIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:src="@drawable/edit" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LayoutDelete"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#e74c3c"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="X"
-                android:textSize="15sp" />
+                android:background="#EB6B56" >
+
+                <ImageView
+                    android:id="@+id/deleteIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:src="@drawable/delete" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

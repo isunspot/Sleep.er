@@ -19,7 +19,7 @@ public class SleeperApp extends Application {
 	}
 	
 	public void loadProfile() {
-		profileDAO.loadProfile();
+		profile = profileDAO.loadProfile();
 		if(profile != null)
 			profileDefined = true;
 		else

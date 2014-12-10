@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import pt.isec.gps.g22.sleeper.core.Profile;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
+import pt.isec.gps.g22.sleeper.core.TimeUtils;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAOImpl;
 import pt.isec.gps.g22.sleeper.ui.R;
 
@@ -65,9 +66,9 @@ public class ProfileActivity extends Activity {
         	gender = profile.getGender();
         	firstHourOfTheDay = profile.getFirstHourOfTheDay();
         	
-            tvDateOfBirthValue.setText(getDate(dateOfBirth));
+            tvDateOfBirthValue.setText(TimeUtils.getDate(dateOfBirth));
             tvGenderValue.setText(genders[gender]);
-            tvFirstHourValue.setText(getTime(firstHourOfTheDay));
+            tvFirstHourValue.setText(TimeUtils.getTime(firstHourOfTheDay));
         }
         
         layoutDateOfBirth = (LinearLayout)findViewById(R.id.LayoutDateOfBirth);
@@ -133,38 +134,7 @@ public class ProfileActivity extends Activity {
         tvFirstHourValue.setTypeface(tfBold);
         tvSave.setTypeface(tf);
     }
-    
-    private String getDate(long unixtime) {
-    	Calendar cal = Calendar.getInstance();
-    	cal.setTimeInMillis(unixtime);
-    	int month = cal.get(Calendar.MONTH)+1;
-    	String s = cal.get(Calendar.YEAR) + "/" + month + "/" + cal.get(Calendar.DAY_OF_MONTH);
-    	return s;
-    }
-    
-    private String getTime(int time) {
-    	int hours = minutesToHours(time);
-    	int minutes = minutesToMinutes(time);
-    	StringBuilder sb = new StringBuilder();
-    	
-    	if(hours < 10)
-    		sb.append("0");
-    	sb.append(hours);
-    	sb.append(":");
-    	if(minutes < 10)
-    		sb.append("0");
-    	sb.append(minutes);
-    	return sb.toString();
-    }
-    
-    private int minutesToHours(int time) {
-    	return time / 60;
-    }
-    
-    private int minutesToMinutes(int time) {
-    	return time % 60;
-    }
-            
+  
     public class CustomDialogFragment extends DialogFragment {
         public CustomDialogFragment() {
         }
@@ -222,8 +192,8 @@ public class ProfileActivity extends Activity {
     	}
 
     	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-    		firstHourOfTheDay = convertToMinutes(hourOfDay,minute);
-    		tvFirstHourValue.setText(getTime(firstHourOfTheDay));
+    		firstHourOfTheDay = TimeUtils.convertToMinutes(hourOfDay,minute);
+    		tvFirstHourValue.setText(TimeUtils.getTime(firstHourOfTheDay));
     	}
     	
         @Override
@@ -245,11 +215,6 @@ public class ProfileActivity extends Activity {
                 titleDivider.setBackgroundColor(color);
             }
         }
-        
-        private int convertToMinutes(int hours, int minutes) {
-        	return hours * 60 + minutes;
-        }
-        
     }
     
     public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -268,7 +233,7 @@ public class ProfileActivity extends Activity {
     	public void onDateSet(DatePicker view, int year, int month, int day) {
     		dateOfBirth = dateToUnixtime(year,month,day);
     		Log.d("UnixT:",String.valueOf(dateOfBirth));
-    		String s = getDate(dateOfBirth);
+    		String s = TimeUtils.getDate(dateOfBirth);
     		Log.d("Value",s);
             tvDateOfBirthValue.setText(s);
     	}

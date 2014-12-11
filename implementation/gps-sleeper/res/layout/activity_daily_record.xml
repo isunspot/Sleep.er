@@ -137,13 +137,12 @@
                             android:id="@+id/rbExhaustionDaily"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
                             android:indeterminate="false"
                             android:isIndicator="false"
                             android:numStars="@integer/NumStars"
                             android:rating="2.0"
                             android:stepSize="1.0" />
+
                 </LinearLayout>
 
                 <View
@@ -250,8 +249,6 @@
                             android:id="@+id/rbSleepQualityDaily"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
                             android:indeterminate="false"
                             android:isIndicator="false"
                             android:numStars="@integer/NumStars"

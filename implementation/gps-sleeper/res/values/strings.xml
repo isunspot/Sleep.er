@@ -42,7 +42,7 @@
     <string name="icSun">Sun Icon</string>
     <string name="strSleepHour">Sleep Hour</string>
     <string name="strWakeupHour">Wakeup Hour</string>    
-    <string name="strExhaustion">Exhaus</string>
+    <string name="strExhaustion">Exhaustion</string>
     <string name="strSleepQuality">Sleep Qty</string>
     <string name="icDelete">Delte Icon</string>
    	<string name="icEdit">Edit Icon</string>

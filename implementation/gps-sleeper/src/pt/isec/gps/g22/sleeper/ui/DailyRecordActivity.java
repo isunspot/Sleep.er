@@ -7,6 +7,7 @@ import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.core.TimeUtils;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAOImpl;
 import pt.isec.gps.g22.sleeper.ui.ProfileActivity.TimePickerFragment;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -40,6 +41,8 @@ public class DailyRecordActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_daily_record);
+		
+		hideActionBar();
 		
 		sleeperApp = (SleeperApp)getApplication();
 		
@@ -87,6 +90,11 @@ public class DailyRecordActivity extends Activity {
 		      
 		Toast.makeText(this, "Daily record saved", Toast.LENGTH_SHORT).show();    
 		finish();
+    }
+	
+    private void hideActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.hide();
     }
 	
 	private DayRecord setDayRecord(DayRecord dayRecord){

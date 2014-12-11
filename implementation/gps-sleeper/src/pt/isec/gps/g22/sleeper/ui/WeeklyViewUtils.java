@@ -85,7 +85,11 @@ public class WeeklyViewUtils {
 			List<DayRecord> dayRecords = new ArrayList<DayRecord>();
 			
 			for (DayRecord record : records) {
-				if (record.getSleepDate() >= weekDay.from && record.getSleepDate() <= weekDay.until) { 
+				final boolean recordInDay = 
+						(record.getSleepDate() >= weekDay.from && record.getSleepDate() <= weekDay.until) ||
+						(record.getWakeupDate() >= weekDay.from && record.getWakeupDate() <= weekDay.until);
+
+				if (recordInDay) { 
 					dayRecords.add(record);
 				}
 			}
@@ -328,19 +332,23 @@ public class WeeklyViewUtils {
 			/*
 			 * sleep period starts and ends in the current day
 			 */
-			values.add(new SeriesValue(record.getSleepDate(), SeriesType.SLEEP));
+			values.add(new SeriesValue(barValue(dayStart, record.getSleepDate()), SeriesType.SLEEP));
 			if (optimumWakingTime < record.getWakeupDate()) { // oversleep
-				values.add(new SeriesValue(optimumWakingTime, SeriesType.OVERSLEEP));
-				values.add(new SeriesValue(record.getWakeupDate(), SeriesType.WAKE));
+				values.add(new SeriesValue(barValue(dayStart, optimumWakingTime), SeriesType.OVERSLEEP));
+				values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.WAKE));
 			} else if (optimumWakingTime > record.getWakeupDate()) { // undersleep
-				values.add(new SeriesValue(record.getWakeupDate(), SeriesType.UNDERSLEEP));
-				values.add(new SeriesValue(optimumWakingTime, SeriesType.WAKE));
+				values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.UNDERSLEEP));
+				values.add(new SeriesValue(barValue(dayStart, optimumWakingTime), SeriesType.WAKE));
 			} else { // exact sleep
-				values.add(new SeriesValue(record.getWakeupDate(), SeriesType.WAKE));
+				values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.WAKE));
 			}
 		}
 		
 		return values;
+	}
+	
+	static long barValue(final long dayStart, final long value) {
+		return (24 * 60) - (value - dayStart) / 60;
 	}
 	
 	/**

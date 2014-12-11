@@ -30,12 +30,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidplot.ui.SeriesRenderer;
 import com.androidplot.xy.BarFormatter;
@@ -169,19 +167,23 @@ public class WeeklyViewActivity extends Activity {
 
 			@Override
 			public boolean onTouch(final View v, final MotionEvent event) {
-				final float value = event.getAxisValue(MotionEvent.AXIS_X);
-				try {
-					final int x = new Double(plot.getGraphWidget().getXVal(value)).intValue();
-					// TODO Call daily view activity
-					
-					long day = weekStart + x*WeeklyViewUtils.DAY_SECONDS;
-					Intent intent = new Intent(WeeklyViewActivity.this, DayView.class);
-					intent.putExtra("day", day);
-            		startActivity(intent);
-					
-					return true;	
-				} catch (final IllegalArgumentException ex) {
-					return false;
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_UP:
+					final float value = event.getAxisValue(MotionEvent.AXIS_X);
+					try {
+						final int x = new Double(plot.getGraphWidget().getXVal(value)).intValue();
+						// TODO Call daily view activity
+						
+						long day = weekStart + x * WeeklyViewUtils.DAY_SECONDS;
+						Intent intent = new Intent(WeeklyViewActivity.this, DayView.class);
+						intent.putExtra("day", day);
+	            		startActivity(intent);
+						
+						return true;	
+					} catch (final IllegalArgumentException ex) {
+						return false;
+					}
+					default: return false;
 				}
 			}
         	
@@ -198,7 +200,7 @@ public class WeeklyViewActivity extends Activity {
 		cal.setTimeInMillis(weekStart*1000);
 		String str = cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.MONTH)+"/"+cal.get(Calendar.YEAR);
 		cal = Calendar.getInstance();
-		cal.setTimeInMillis((weekStart+WeeklyViewUtils.WEEK_SECONDS)*1000);
+		cal.setTimeInMillis((weekStart + WeeklyViewUtils.WEEK_SECONDS) * 1000);
 		str += " to "+cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.MONTH)+"/"+cal.get(Calendar.YEAR);
 		return str;		
 	}

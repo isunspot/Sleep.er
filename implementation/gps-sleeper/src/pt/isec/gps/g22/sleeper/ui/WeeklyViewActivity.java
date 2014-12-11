@@ -14,6 +14,7 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -104,6 +105,7 @@ public class WeeklyViewActivity extends Activity {
 		txtViewAvgSleepQuality = (TextView) findViewById(R.id.txtViewAvgSleepQuality);
 
 		plot = (XYPlot) findViewById(R.id.barPlot);
+		plot.setTitle("");
 		plot.setRangeStep(XYStepMode.INCREMENT_BY_VAL, 3 * 60);
         plot.setDomainStep(XYStepMode.INCREMENT_BY_VAL, 1);
         plot.setRangeBoundaries(0, 24 * 60, BoundaryMode.FIXED);
@@ -180,8 +182,19 @@ public class WeeklyViewActivity extends Activity {
         });
 		
 		final long now = new Date().getTime() / 1000;
+		plot.setTitle(getWeekStr(getWeekStart(now,WeeklyViewUtils.DAY_SECONDS)));
 		loadValues(now);
 		bindValues();
+	}
+	
+	private String getWeekStr(long weekStart){
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(weekStart*1000);
+		String str = cal.get(Calendar.DAY_OF_MONTH)+":"+cal.get(Calendar.MONTH)+":"+cal.get(Calendar.YEAR);
+		cal = Calendar.getInstance();
+		cal.setTimeInMillis((weekStart+WeeklyViewUtils.WEEK_SECONDS)*1000);
+		str += " to "+cal.get(Calendar.DAY_OF_MONTH)+":"+cal.get(Calendar.MONTH)+":"+cal.get(Calendar.YEAR);
+		return str;		
 	}
 
 	@Override
@@ -200,6 +213,8 @@ public class WeeklyViewActivity extends Activity {
 					weekStart -= WeeklyViewUtils.WEEK_SECONDS;
 					loadValues(weekStart);
 					bindValues();
+					plot.setTitle(getWeekStr(weekStart));
+					plot.redraw();					
 				}
 
 				// Right to left swipe action
@@ -207,6 +222,8 @@ public class WeeklyViewActivity extends Activity {
 					weekStart += WeeklyViewUtils.WEEK_SECONDS;
 					loadValues(weekStart);
 					bindValues();
+					plot.setTitle(getWeekStr(weekStart));
+					plot.redraw();					
 				}
 
 			} else {

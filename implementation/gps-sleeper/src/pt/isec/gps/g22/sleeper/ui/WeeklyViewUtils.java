@@ -315,11 +315,14 @@ public class WeeklyViewUtils {
 			 */
 			if (optimumWakingTime > dayStart) {
 				if (optimumWakingTime < record.getWakeupDate()) { // oversleep
-					
+					values.add(new SeriesValue(barValue(dayStart, dayStart), SeriesType.SLEEP));
+					values.add(new SeriesValue(barValue(dayStart, optimumWakingTime), SeriesType.OVERSLEEP));
+					values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.WAKE));
 				} else if (optimumWakingTime > record.getWakeupDate()) { // undersleep
 					
 				} else { // exact sleep
-					
+					values.add(new SeriesValue(barValue(dayStart, dayStart), SeriesType.SLEEP));
+					values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.WAKE));
 				}
 			} else {
 				

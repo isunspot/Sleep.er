@@ -64,7 +64,7 @@ public class ProfileActivity extends Activity {
         	gender = profile.getGender();
         	firstHourOfTheDay = profile.getFirstHourOfTheDay();
         	
-            tvDateOfBirthValue.setText(TimeUtils.getDate(dateOfBirth/1000));
+            tvDateOfBirthValue.setText(TimeUtils.getDate(dateOfBirth));
             tvGenderValue.setText(genders[gender]);
             tvFirstHourValue.setText(TimeUtils.getTime(firstHourOfTheDay));
         }
@@ -244,7 +244,7 @@ public class ProfileActivity extends Activity {
     	public void onDateSet(DatePicker view, int year, int month, int day) {
     		if(view.isShown()) {
     			dateOfBirth = dateToUnixtime(year,month,day);
-    			String s = TimeUtils.getDate(dateOfBirth/1000);
+    			String s = TimeUtils.getDate(dateOfBirth);
     			tvDateOfBirthValue.setText(s);
     		}
     	}
@@ -301,7 +301,7 @@ public class ProfileActivity extends Activity {
         
         private void updateDate(DatePickerDialog datePickerDialog) {
         	Calendar cal = Calendar.getInstance();
-        	cal.setTimeInMillis(profile.getDateOfBirth()*1000);
+        	cal.setTimeInMillis(profile.getDateOfBirth());
         	int year = cal.get(Calendar.YEAR);
         	int month = cal.get(Calendar.MONTH);
         	int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);

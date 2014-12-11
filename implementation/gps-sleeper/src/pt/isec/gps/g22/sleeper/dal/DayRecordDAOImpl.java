@@ -57,9 +57,9 @@ public class DayRecordDAOImpl implements DayRecordDAO {
         DayRecord dayRecord = new DayRecord();
 
         dayRecord.setId(cursor.getInt(0));
-        dayRecord.setSleepDate(cursor.getInt(1));
+        dayRecord.setSleepDate(cursor.getLong(1));
         dayRecord.setExhaustion(cursor.getInt(2));
-        dayRecord.setWakeupDate(cursor.getInt(3));
+        dayRecord.setWakeupDate(cursor.getLong(3));
         dayRecord.setSleepQuality(cursor.getInt(4));
         return dayRecord;
     }

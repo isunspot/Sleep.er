@@ -25,6 +25,7 @@ public class ProfileDAOImpl implements ProfileDAO {
         values.put(Profile.COLUMN_FIRSTHOUROFTHEDAY,profile.getFirstHourOfTheDay());
 
         rowId = (int)db.insert(Profile.TABLE_NAME,null,values);
+        profile.setId(rowId);
         db.close();
         return rowId;
     }
@@ -63,7 +64,7 @@ public class ProfileDAOImpl implements ProfileDAO {
 
         profile.setId(cursor.getInt(0));
         profile.setGender(cursor.getInt(1));
-        profile.setDateOfBirth(cursor.getInt(2));
+        profile.setDateOfBirth(cursor.getLong(2));
         profile.setFirstHourOfTheDay(cursor.getInt(3));
         return profile;
     }

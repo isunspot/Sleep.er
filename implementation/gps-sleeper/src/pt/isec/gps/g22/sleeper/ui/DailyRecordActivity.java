@@ -18,7 +18,7 @@ public class DailyRecordActivity extends Activity {
 	RatingBar rbExhaustion;
 	RatingBar rbQualitySleep;
 	int idDayRecord;
-	int dayTime;
+	int day;
 	DayRecordDAOImpl dayRecordoDAOImp;
 	DayRecord dayRecord;
 	Boolean editMode;
@@ -30,7 +30,7 @@ public class DailyRecordActivity extends Activity {
 		
 		Intent intent = getIntent();		
 		idDayRecord  = intent.getIntExtra("idDayRecord", -1);
-		dayTime  = intent.getIntExtra("dayTime", -1);
+		day  = intent.getIntExtra("day", -1);
 		
 		dayRecordoDAOImp = new DayRecordDAOImpl(getApplicationContext());
 		
@@ -85,7 +85,7 @@ public class DailyRecordActivity extends Activity {
 			tempRecord = dayRecord;
 				
 		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(dayTime);
+		cal.setTimeInMillis(day);
 		hour = tpSleep.getCurrentHour();
 		min = tpSleep.getCurrentMinute();
                
@@ -95,7 +95,7 @@ public class DailyRecordActivity extends Activity {
         cal.set(Calendar.SECOND, 0); 
         
         
-		tempRecord.setSleepDate((int)cal.getTimeInMillis()/1000);
+		tempRecord.setSleepDate(cal.getTimeInMillis()/1000);
 		tempRecord.setExhaustion((int) rbExhaustion.getRating());
 		
 		hour = tpWake.getCurrentHour();
@@ -109,7 +109,7 @@ public class DailyRecordActivity extends Activity {
         cal.set(Calendar.MINUTE,min);
         cal.set(Calendar.SECOND, 0);
 		
-		tempRecord.setWakeupDate((int)cal.getTimeInMillis()/1000);
+		tempRecord.setWakeupDate(cal.getTimeInMillis()/1000);
 		tempRecord.setSleepQuality((int) rbQualitySleep.getRating());
 		
 		return tempRecord;

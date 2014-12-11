@@ -14,7 +14,7 @@
     <string name="strCancel">Cancel</string>
     <string name="strSave">Save</string>
     <string name="strNext">Next</string>
-    <string name="strInsert">Insert</string>
+    <string name="strInsertRecord">Insert Record</string>
     <string name="strClose">Close</string>
     <string name="title_activity_main_screen">Main Screen</string>
     <string name="strUserProfile">User Profile</string>
@@ -37,7 +37,10 @@
     <string name="icWeeklyView">Set Alarm Icon</string>
     <string name="icGenericTips">Generic Tips Icon</string>
     <string name="icFirstHour">First Hour Icon</string>
+    <string name="icMoon">Moon Icon</string>
+    <string name="icDelete">Delte Icon</string>
+   	<string name="icEdit">Edit Icon</string>
     <string name="title_activity_day_view">DayView</string>
-    <string name="strDayView">Day:</string>
+    <string name="strDayView">Day</string>
 
 </resources>

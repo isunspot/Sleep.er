@@ -1,19 +1,17 @@
 package pt.isec.gps.g22.sleeper.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class CustomAdapter extends BaseAdapter {
 	
@@ -56,25 +54,34 @@ public class CustomAdapter extends BaseAdapter {
         TextView tvEndHour = (TextView) view.findViewById(R.id.tvEndHour);
         tvEndHour.setText(String.valueOf(dayRecord.getWakeupDate()));
   
-        TextView tvEdit = (TextView) view.findViewById(R.id.tvEdit);
-        TextView tvDelete = (TextView) view.findViewById(R.id.tvDelete);
+        LinearLayout editLayout = (LinearLayout) view.findViewById(R.id.LayoutEdit);
+        LinearLayout deleteLayout = (LinearLayout) view.findViewById(R.id.LayoutDelete);
         
-        tvEdit.setOnClickListener(new View.OnClickListener() {
+        editLayout.setOnClickListener(new View.OnClickListener() {
         	@Override
         	public void onClick(View view) {
         		Intent intent = new Intent(context,DailyRecordActivity.class);
+        		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         		intent.putExtra("id", dayRecord.getId());
         		context.startActivity(intent);
         	}
         });
         
-        tvDelete.setOnClickListener(new View.OnClickListener() {
+        deleteLayout.setOnClickListener(new View.OnClickListener() {
         	@Override
         	public void onClick(View view) {
         		sleeper.getDayRecordDAO().deleteRecord(dayRecord);
+        		listRecords.remove(dayRecord);
+        		refresAdapter(listRecords);
         	}
         });
  
         return view;
 	}
+	
+	public synchronized void refresAdapter(List<DayRecord> dataRecords) {   
+		listRecords.clear();
+		listRecords.addAll(dataRecords);
+	    notifyDataSetChanged();
+	   }
 }

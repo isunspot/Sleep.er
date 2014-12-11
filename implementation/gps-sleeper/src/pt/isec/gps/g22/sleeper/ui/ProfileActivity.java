@@ -15,7 +15,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.DatePicker;
@@ -25,7 +24,6 @@ import android.widget.TimePicker;
 import pt.isec.gps.g22.sleeper.core.Profile;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.core.TimeUtils;
-import pt.isec.gps.g22.sleeper.dal.ProfileDAOImpl;
 import pt.isec.gps.g22.sleeper.ui.R;
 
 public class ProfileActivity extends Activity {
@@ -62,7 +60,7 @@ public class ProfileActivity extends Activity {
         setFonts();
         
         if(sleeper.profileDefined()) {
-        	dateOfBirth = profile.getDateOfBirth();
+        	dateOfBirth = profile.getDateOfBirth()*1000;
         	gender = profile.getGender();
         	firstHourOfTheDay = profile.getFirstHourOfTheDay();
         	
@@ -103,15 +101,16 @@ public class ProfileActivity extends Activity {
         layoutSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-        	    profile.setDateOfBirth(dateOfBirth);
+        	    profile.setDateOfBirth(dateOfBirth/1000);
         	    profile.setGender(gender);
         	    profile.setFirstHourOfTheDay(firstHourOfTheDay);
         	    
-        	    if(sleeper.profileDefined())
+        	    if(sleeper.profileDefined()) {
         	    	sleeper.getProfileDAO().updateProfile(profile);
-        	    else
+        	    } else {
         	    	sleeper.getProfileDAO().insertProfile(profile);
-        	    sleeper.defineProfile();
+        	    	sleeper.defineProfile();
+        	    }
         	    finish();
             }
         });
@@ -185,15 +184,24 @@ public class ProfileActivity extends Activity {
     	@Override
     	public Dialog onCreateDialog(Bundle savedInstanceState) {
     		final Calendar c = Calendar.getInstance();
-    		int hour = c.get(Calendar.HOUR_OF_DAY);
-    		int minute = c.get(Calendar.MINUTE);
+    		int hour, minute;
+    		
+    		if(sleeper.profileDefined()) {
+    			c.set(Calendar.HOUR_OF_DAY, TimeUtils.minutesToHours(profile.getFirstHourOfTheDay()));
+    			c.set(Calendar.MINUTE, TimeUtils.minutesToMinutes(profile.getFirstHourOfTheDay()));
+    		}
+    		
+			hour = c.get(Calendar.HOUR_OF_DAY);
+			minute = c.get(Calendar.MINUTE);
 
     		return new TimePickerDialog(getActivity(), this, hour, minute,DateFormat.is24HourFormat(getActivity()));
     	}
 
     	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-    		firstHourOfTheDay = TimeUtils.convertToMinutes(hourOfDay,minute);
-    		tvFirstHourValue.setText(TimeUtils.getTime(firstHourOfTheDay));
+    		if(view.isShown()) {
+    			firstHourOfTheDay = TimeUtils.convertToMinutes(hourOfDay,minute);
+    			tvFirstHourValue.setText(TimeUtils.getTime(firstHourOfTheDay));
+    		}
     	}
     	
         @Override
@@ -227,15 +235,18 @@ public class ProfileActivity extends Activity {
     		DatePickerDialog datePickerDialog = setDatePicker();
     		setMin(datePickerDialog);
     		setMax(datePickerDialog);
+    		if(sleeper.profileDefined()) {
+    			updateDate(datePickerDialog);
+    		}
     		return datePickerDialog;
     	}
     	
     	public void onDateSet(DatePicker view, int year, int month, int day) {
-    		dateOfBirth = dateToUnixtime(year,month,day);
-    		Log.d("UnixT:",String.valueOf(dateOfBirth));
-    		String s = TimeUtils.getDate(dateOfBirth);
-    		Log.d("Value",s);
-            tvDateOfBirthValue.setText(s);
+    		if(view.isShown()) {
+    			dateOfBirth = dateToUnixtime(year,month,day);
+    			String s = TimeUtils.getDate(dateOfBirth);
+    			tvDateOfBirthValue.setText(s);
+    		}
     	}
     	
         @Override
@@ -286,6 +297,15 @@ public class ProfileActivity extends Activity {
         	min = Calendar.getInstance();
     		min.add(Calendar.YEAR,-120);
     		datePickerDialog.getDatePicker().setMinDate(min.getTimeInMillis());
+        }
+        
+        private void updateDate(DatePickerDialog datePickerDialog) {
+        	Calendar cal = Calendar.getInstance();
+        	cal.setTimeInMillis(profile.getDateOfBirth());
+        	int year = cal.get(Calendar.YEAR);
+        	int month = cal.get(Calendar.MONTH);
+        	int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+        	datePickerDialog.updateDate(year,month,dayOfMonth);
         }
     }
     

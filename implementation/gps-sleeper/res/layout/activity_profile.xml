@@ -47,7 +47,7 @@
             android:layout_marginTop="25dp" >
 
             <ImageView
-                android:id="@+id/icDateOfBirth"
+                android:id="@+id/icMoon"
                 android:layout_width="48dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"

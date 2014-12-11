@@ -28,6 +28,7 @@
     <string name="title_activity_dismiss_alarm">Dismiss Alarm</string>
     <string name="DismissAlarm">Dismiss</string>
     <string name="title_activity_daily_record">DailyRecord</string>
+    <string name="strDailyRecord">Daily Record</string>
     <string name="notDefined">N/A</string>
     <string name="strProfile">Profile</string>
     <string name="icProfile">Profile Icon</string>
@@ -38,6 +39,11 @@
     <string name="icGenericTips">Generic Tips Icon</string>
     <string name="icFirstHour">First Hour Icon</string>
     <string name="icMoon">Moon Icon</string>
+    <string name="icSun">Sun Icon</string>
+    <string name="strSleepHour">Sleep Hour</string>
+    <string name="strWakeupHour">Wakeup Hour</string>    
+    <string name="strExhaustion">Exhaus</string>
+    <string name="strSleepQuality">Sleep Qty</string>
     <string name="icDelete">Delte Icon</string>
    	<string name="icEdit">Edit Icon</string>
     <string name="title_activity_day_view">DayView</string>

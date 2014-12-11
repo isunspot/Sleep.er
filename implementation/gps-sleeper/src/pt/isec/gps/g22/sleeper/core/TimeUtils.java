@@ -14,6 +14,17 @@ public class TimeUtils {
 		return hours * 60 + minutes;
 	}
 	
+	public static String formatDuration(final long value) {
+		final long valueMinutes = value / 60;
+		
+		final long hours = valueMinutes / 60;
+		if (hours > 0) {
+			return hours + "h" + valueMinutes % 60;
+		} else {
+			return valueMinutes % 60 + "m";
+		}
+	}
+	
 	public static long ageFromDateOfBirth(final long dateOfBirth, final long now) {
 		if (dateOfBirth > now) {
 			throw new IllegalArgumentException("The date of birth cannot be in the future");

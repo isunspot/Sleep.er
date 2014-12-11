@@ -23,6 +23,7 @@ import pt.isec.gps.g22.sleeper.core.ExhaustionLevel;
 import pt.isec.gps.g22.sleeper.core.Profile;
 import pt.isec.gps.g22.sleeper.core.SleepQuality;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
+import pt.isec.gps.g22.sleeper.core.TimeUtils;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAO;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAO;
 import android.app.Activity;
@@ -33,7 +34,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
-
 import android.widget.Toast;
 
 import com.androidplot.ui.SeriesRenderer;
@@ -190,10 +190,10 @@ public class WeeklyViewActivity extends Activity {
 	private String getWeekStr(long weekStart){
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(weekStart*1000);
-		String str = cal.get(Calendar.DAY_OF_MONTH)+":"+cal.get(Calendar.MONTH)+":"+cal.get(Calendar.YEAR);
+		String str = cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.MONTH)+"/"+cal.get(Calendar.YEAR);
 		cal = Calendar.getInstance();
 		cal.setTimeInMillis((weekStart+WeeklyViewUtils.WEEK_SECONDS)*1000);
-		str += " to "+cal.get(Calendar.DAY_OF_MONTH)+":"+cal.get(Calendar.MONTH)+":"+cal.get(Calendar.YEAR);
+		str += " to "+cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.MONTH)+"/"+cal.get(Calendar.YEAR);
 		return str;		
 	}
 
@@ -252,9 +252,9 @@ public class WeeklyViewActivity extends Activity {
 	}
 	
 	private void bindValues() {
-		txtViewMaxHours.setText(Long.toString(maxTimeSleptInADay));
-		txtViewMinHours.setText(Long.toString(minTimeSleptInADay));
-		txtViewSleepDebt.setText(Long.toString(weekSleepDebt));
+		txtViewMaxHours.setText(TimeUtils.formatDuration((int) maxTimeSleptInADay));
+		txtViewMinHours.setText(TimeUtils.formatDuration((int) minTimeSleptInADay));
+		txtViewSleepDebt.setText(TimeUtils.formatDuration((int) weekSleepDebt));
 		txtViewAvgExhaustion.setText(averageExhaustionLevel == null ? "0" : Integer.toString(averageExhaustionLevel.getLevel()));
 		txtViewAvgSleepQuality.setText(averageSleepQuality == null ? "0" : Integer.toString(averageSleepQuality.getLevel()));
 		
@@ -268,19 +268,19 @@ public class WeeklyViewActivity extends Activity {
 			
 				final Number[] series = new Number[dayValuesList.size()];
 				for (int k = 0; k < dayValuesList.size(); k++) {
-				if (k != i) {
-					series[k] = 0;
-				} else {
-					series[k] = value.value;
+					if (k != i) {
+						series[k] = 0;
+					} else {
+						series[k] = value.value;
+					}
 				}
-			}
 
-			final XYSeries xySeries = new SimpleXYSeries(
-			Arrays.asList(series),
-			SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "series");
-			plot.addSeries(xySeries, getFormatter(value.type));
+				final XYSeries xySeries = new SimpleXYSeries(
+				Arrays.asList(series),
+				SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "series");
+				plot.addSeries(xySeries, getFormatter(value.type));
+			}
 		}
-}
 	}
 	
 	/**

@@ -301,7 +301,7 @@ public class ProfileActivity extends Activity {
         
         private void updateDate(DatePickerDialog datePickerDialog) {
         	Calendar cal = Calendar.getInstance();
-        	cal.setTimeInMillis(profile.getDateOfBirth());
+        	cal.setTimeInMillis(profile.getDateOfBirth()*1000);
         	int year = cal.get(Calendar.YEAR);
         	int month = cal.get(Calendar.MONTH);
         	int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);

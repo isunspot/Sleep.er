@@ -26,6 +26,7 @@ import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAO;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAO;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -172,6 +173,11 @@ public class WeeklyViewActivity extends Activity {
 				try {
 					final int x = new Double(plot.getGraphWidget().getXVal(value)).intValue();
 					// TODO Call daily view activity
+					
+					long day = weekStart + x*WeeklyViewUtils.DAY_SECONDS;
+					Intent intent = new Intent(WeeklyViewActivity.this, DayView.class);
+					intent.putExtra("day", day);
+            		startActivity(intent);
 					
 					return true;	
 				} catch (final IllegalArgumentException ex) {

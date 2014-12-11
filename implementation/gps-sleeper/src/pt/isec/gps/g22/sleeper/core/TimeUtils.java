@@ -25,7 +25,7 @@ public class TimeUtils {
 
 	public static String getDate(long unixtime) {
 		Calendar cal = Calendar.getInstance();
-		unixtime = unixtime * 1000;
+		unixtime = unixtime;
 		cal.setTimeInMillis(unixtime);
 		int month = cal.get(Calendar.MONTH) + 1;
 		String s = cal.get(Calendar.YEAR) + "/" + month + "/"

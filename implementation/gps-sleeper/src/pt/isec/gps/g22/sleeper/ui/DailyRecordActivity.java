@@ -30,7 +30,8 @@ public class DailyRecordActivity extends Activity {
 	RatingBar rbExhaustion,rbQualitySleep;
 	LinearLayout sleepHourLayout,wakeupHourLayout;
 	TextView tvSleepHourValue,tvWakeupHourValue;
-	int idDayRecord,day;
+	int idDayRecord;
+	long day;
 	DayRecord dayRecord;
 	Boolean editMode;
 	int sleepHour, sleepMin, wakeupHour, wakeupMin;
@@ -44,7 +45,7 @@ public class DailyRecordActivity extends Activity {
 		
 		Intent intent = getIntent();		
 		idDayRecord  = intent.getIntExtra("idDayRecord", -1);
-		day = intent.getIntExtra("day", -1);
+		day = intent.getLongExtra("day", -1);
 				
 		tvSleepHourValue = (TextView) findViewById(R.id.tvSleepHourValue);
 		tvWakeupHourValue = (TextView) findViewById(R.id.tvWakeupHourValue);		

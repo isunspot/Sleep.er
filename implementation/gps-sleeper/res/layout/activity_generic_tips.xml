@@ -9,54 +9,68 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:background="#bdc3c7"
         android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/tvGenericTips"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/strGenericTip"
-            android:textSize="25sp" />
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginTop="35dp"
+            android:contentDescription="@string/icGenericTips"
+            android:src="@drawable/bookwhite" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="30dp"
+            android:alpha=".70"
+            android:gravity="center_horizontal"
+            android:text="@string/strSleepTips"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
+        android:gravity="center_horizontal|center_vertical"
         android:orientation="vertical" >
-
+               
         <TextView
             android:id="@+id/tvTips"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="75dp"
-            android:textSize="@dimen/fontsize"
-            android:textStyle="italic" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/btClose"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/strClose" />
+            android:gravity="center_horizontal"
+            android:textColor="#000000"
+            android:textSize="20sp" />
         
-    	<Button
-            android:id="@+id/btNext"
-            android:layout_width="0dp"
+    </LinearLayout>
+    
+        <LinearLayout
+        android:id="@+id/LayoutNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.40"
+        android:background="#27ae60"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tvNext"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/strNext" />
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
+            android:text="@string/strNext"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
 
     </LinearLayout>
 

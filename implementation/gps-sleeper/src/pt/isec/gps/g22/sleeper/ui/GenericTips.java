@@ -3,6 +3,7 @@ package pt.isec.gps.g22.sleeper.ui;
 import java.util.ArrayList;
 import java.util.Random;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,12 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class GenericTips extends Activity {
 
 	TextView tvTips;
-	Button btNext, btClose;
+	LinearLayout nextLayout;
 	ArrayList<String> tips;
 	int previousRandomNumber = -1;
 	
@@ -24,26 +26,20 @@ public class GenericTips extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_generic_tips);
 		
+		hideActionBar();
 		tvTips = (TextView) findViewById(R.id.tvTips);
-		btNext = (Button) findViewById(R.id.btNext);
-		btClose = (Button) findViewById(R.id.btClose);
+		nextLayout = (LinearLayout) findViewById(R.id.LayoutNext);
 		
 		setUpTips();
 		tvTips.setText(getRandomTip());
 		
-		btNext.setOnClickListener(new OnClickListener(){
+		nextLayout.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				tvTips.setText(getRandomTip());
 			}
 		});
 		
-		btClose.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-				finish();	
-			}
-		});
 	}
 	
 	private int getRandomNumber() {
@@ -54,6 +50,11 @@ public class GenericTips extends Activity {
 		previousRandomNumber = randomNumber;
 		return randomNumber;
 	}
+	
+    private void hideActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.hide();
+    }
 	
 	private String getRandomTip() {
 		return tips.get(getRandomNumber());

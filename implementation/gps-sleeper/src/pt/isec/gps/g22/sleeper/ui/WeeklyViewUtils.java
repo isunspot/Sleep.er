@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.ExhaustionLevel;
@@ -22,6 +23,7 @@ public class WeeklyViewUtils {
 	
 	static long getWeekStart(final long now, final long dayStart) {
 		final Calendar cal = Calendar.getInstance();
+		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 		cal.setTime(new Date(now * 1000)); // Date accepts milliseconds
 		final int dayOfWeek = (cal.get(Calendar.DAY_OF_WEEK) - 1) * DAY_SECONDS; // Sunday is 1
 		final int hours = cal.get(Calendar.HOUR_OF_DAY) * HOUR_SECONDS;
@@ -43,6 +45,7 @@ public class WeeklyViewUtils {
 			final List<SeriesValue> dayValues = new ArrayList<SeriesValue>();
 			final int recordCount = chartDay.records.size();
 			
+			dayValues.add(new SeriesValue(24 * 60, SeriesType.WAKE));
 			if (recordCount == 1) {
 				dayValues.addAll(recordValues(chartDay.from, chartDay.until, chartDay.records.get(0), chartDay.optimumWakingTime));
 			} else if (recordCount > 1) {
@@ -313,24 +316,40 @@ public class WeeklyViewUtils {
 			/*
 			 * sleep period starts in previous day 
 			 */
-			if (optimumWakingTime > dayStart) {
-				if (optimumWakingTime < record.getWakeupDate()) { // oversleep
+			if (optimumWakingTime < record.getWakeupDate()) { // oversleep
+				if (optimumWakingTime > dayStart) {
 					values.add(new SeriesValue(barValue(dayStart, dayStart), SeriesType.SLEEP));
-					values.add(new SeriesValue(barValue(dayStart, optimumWakingTime), SeriesType.OVERSLEEP));
-					values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.WAKE));
-				} else if (optimumWakingTime > record.getWakeupDate()) { // undersleep
-					
-				} else { // exact sleep
-					values.add(new SeriesValue(barValue(dayStart, dayStart), SeriesType.SLEEP));
-					values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.WAKE));
+					values.add(new SeriesValue(barValue(dayStart, optimumWakingTime), SeriesType.OVERSLEEP));	
+				} else {
+					values.add(new SeriesValue(barValue(dayStart, dayStart), SeriesType.OVERSLEEP));
 				}
-			} else {
-				
+				values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.WAKE));	
+			} else if (optimumWakingTime > record.getWakeupDate()) { // undersleep
+				if (record.getWakeupDate() > dayStart) {
+					values.add(new SeriesValue(barValue(dayStart, dayStart), SeriesType.SLEEP));
+					values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.UNDERSLEEP));
+				} else {
+					values.add(new SeriesValue(barValue(dayStart, dayStart), SeriesType.UNDERSLEEP));
+				}
+				values.add(new SeriesValue(barValue(dayStart, optimumWakingTime), SeriesType.WAKE));
+			} else { // exact sleep
+				values.add(new SeriesValue(barValue(dayStart, dayStart), SeriesType.SLEEP));
+				values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.WAKE));
 			}
 		} else if (record.getWakeupDate() > dayEnd) {
 			/*
 			 * sleep period ends in the next day
 			 */
+			values.add(new SeriesValue(barValue(dayStart, record.getSleepDate()), SeriesType.SLEEP));
+			if (optimumWakingTime < record.getWakeupDate()) { // oversleep
+				if (optimumWakingTime < dayEnd) {
+					values.add(new SeriesValue(barValue(dayStart, optimumWakingTime), SeriesType.OVERSLEEP));
+				}
+			} else if (optimumWakingTime > record.getWakeupDate()) { // undersleep
+				if (record.getWakeupDate() < dayEnd) {
+					values.add(new SeriesValue(barValue(dayStart, record.getWakeupDate()), SeriesType.UNDERSLEEP));
+				}
+			}
 		} else {
 			/*
 			 * sleep period starts and ends in the current day
@@ -367,8 +386,8 @@ public class WeeklyViewUtils {
 			final SleepQuality sleepQuality, final long now) {
 		final boolean isMale = profile.getGender() == 0;
 		final long age = TimeUtils.ageFromDateOfBirth(profile.getDateOfBirth(), now);
-		long base = SleepDuration.getDuration(age, isMale); 
-		long delta = SleepDelta.getDelta(accumDebt, exhaustionLevel, sleepQuality);
+		long base = SleepDuration.getDuration(age, isMale) * 60;
+		long delta = SleepDelta.getDelta(accumDebt, exhaustionLevel, sleepQuality) * 60;
 		
 		return start + base + delta;
 	}

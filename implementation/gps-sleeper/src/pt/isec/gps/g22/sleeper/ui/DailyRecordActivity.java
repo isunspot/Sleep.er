@@ -17,6 +17,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
@@ -134,7 +135,7 @@ public class DailyRecordActivity extends Activity {
 	private void populateFields(int idDayRecord){
 		if(idDayRecord != -1)
 		{			
-			sleeperApp.getDayRecordDAO().loadDayRecord(idDayRecord);
+			dayRecord = sleeperApp.getDayRecordDAO().loadDayRecord(idDayRecord);
 			if(dayRecord!=null)
 			{
 				Calendar calendar = Calendar.getInstance();

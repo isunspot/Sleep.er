@@ -16,6 +16,7 @@ import java.text.ParsePosition;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
@@ -163,16 +164,35 @@ public class WeeklyViewActivity extends Activity {
         	
         });
         
+//        plot.setOnClickListener(new View.OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				final float value = event.getAxisValue(MotionEvent.AXIS_X);
+//				try {
+//					final int x = new Double(plot.getGraphWidget().getXVal(value)).intValue();
+//					// TODO Call daily view activity
+//					
+//					long day = weekStart + x * WeeklyViewUtils.DAY_SECONDS;
+//					Intent intent = new Intent(WeeklyViewActivity.this, DayView.class);
+//					intent.putExtra("day", day);
+//            		startActivity(intent);
+//				} catch (final IllegalArgumentException ex) {
+//				}				
+//			}
+//		});
+        
         plot.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(final View v, final MotionEvent event) {
 				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN: 
+					return true;
 				case MotionEvent.ACTION_UP:
 					final float value = event.getAxisValue(MotionEvent.AXIS_X);
 					try {
 						final int x = new Double(plot.getGraphWidget().getXVal(value)).intValue();
-						// TODO Call daily view activity
 						
 						long day = weekStart + x * WeeklyViewUtils.DAY_SECONDS;
 						Intent intent = new Intent(WeeklyViewActivity.this, DayView.class);
@@ -265,6 +285,9 @@ public class WeeklyViewActivity extends Activity {
 		txtViewSleepDebt.setText(TimeUtils.formatDuration((int) weekSleepDebt));
 		txtViewAvgExhaustion.setText(averageExhaustionLevel == null ? "0" : Integer.toString(averageExhaustionLevel.getLevel()));
 		txtViewAvgSleepQuality.setText(averageSleepQuality == null ? "0" : Integer.toString(averageSleepQuality.getLevel()));
+		
+		// clear any previous series
+		plot.clear();
 		
 		// iterate through the days
 		for (int i = 0; i < dayValuesList.size(); i++) {

@@ -60,7 +60,7 @@ public class ProfileActivity extends Activity {
         setFonts();
         
         if(sleeper.profileDefined()) {
-        	dateOfBirth = profile.getDateOfBirth();
+        	dateOfBirth = profile.getDateOfBirth()*1000;
         	gender = profile.getGender();
         	firstHourOfTheDay = profile.getFirstHourOfTheDay();
         	
@@ -101,7 +101,7 @@ public class ProfileActivity extends Activity {
         layoutSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-        	    profile.setDateOfBirth(dateOfBirth);
+        	    profile.setDateOfBirth(dateOfBirth/1000);
         	    profile.setGender(gender);
         	    profile.setFirstHourOfTheDay(firstHourOfTheDay);
         	    

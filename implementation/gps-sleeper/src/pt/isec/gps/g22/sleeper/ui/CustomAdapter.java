@@ -71,9 +71,17 @@ public class CustomAdapter extends BaseAdapter {
         	@Override
         	public void onClick(View view) {
         		sleeper.getDayRecordDAO().deleteRecord(dayRecord);
+        		listRecords.remove(dayRecord);
+        		refresAdapter(listRecords);
         	}
         });
  
         return view;
 	}
+	
+	public synchronized void refresAdapter(List<DayRecord> dataRecords) {   
+		listRecords.clear();
+		listRecords.addAll(dataRecords);
+	    notifyDataSetChanged();
+	   }
 }

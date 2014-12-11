@@ -98,7 +98,7 @@ public class DailyRecordActivity extends Activity {
 			tempRecord = dayRecord;
 				
 		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(day);
+		cal.setTimeInMillis(day*1000);
                
 		//Set calendar        
         cal.set(Calendar.HOUR_OF_DAY,sleepHour);

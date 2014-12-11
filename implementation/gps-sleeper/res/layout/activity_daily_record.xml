@@ -263,13 +263,14 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/LayoutSave"
+        android:id="@+id/LayoutSaveDaily"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:alpha="0.40"
         android:background="#27ae60"
         android:gravity="center_horizontal"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:onClick="saveDailyRecord" >
 
         <TextView
             android:id="@+id/tvSave"

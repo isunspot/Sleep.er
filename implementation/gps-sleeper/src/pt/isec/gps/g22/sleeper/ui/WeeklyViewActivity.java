@@ -122,7 +122,7 @@ public class WeeklyViewActivity extends Activity {
 			@Override
 			public StringBuffer format(Object object, StringBuffer buffer,
 					FieldPosition field) {
-				int delta = 2 * 60;
+				int delta = 0; //2 * 60;
 				
 				int value = (int) (24 * 60 - delta - ((Double) object));
 				if (value < 0) {

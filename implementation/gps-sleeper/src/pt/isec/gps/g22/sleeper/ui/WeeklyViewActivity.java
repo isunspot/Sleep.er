@@ -24,7 +24,7 @@ import pt.isec.gps.g22.sleeper.core.ExhaustionLevel;
 import pt.isec.gps.g22.sleeper.core.Profile;
 import pt.isec.gps.g22.sleeper.core.SleepQuality;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
-import pt.isec.gps.g22.sleeper.core.TimeUtils;
+import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAO;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAO;
 import android.app.Activity;

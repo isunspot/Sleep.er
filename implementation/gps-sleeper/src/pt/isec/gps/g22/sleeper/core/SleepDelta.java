@@ -1,6 +1,6 @@
 package pt.isec.gps.g22.sleeper.core;
 
-import static pt.isec.gps.g22.sleeper.core.TimeUtils.duration;
+import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.duration;
 
 /**
  * Class for the calculation of the sleep delta

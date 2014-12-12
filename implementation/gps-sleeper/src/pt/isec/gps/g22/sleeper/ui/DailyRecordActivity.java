@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
-import pt.isec.gps.g22.sleeper.core.TimeUtils;
+import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAOImpl;
 import pt.isec.gps.g22.sleeper.ui.ProfileActivity.TimePickerFragment;
 import android.app.ActionBar;

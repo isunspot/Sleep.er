@@ -1,4 +1,4 @@
-package pt.isec.gps.g22.sleeper.core;
+package pt.isec.gps.g22.sleeper.core.time;
 
 import java.util.Calendar;
 
@@ -36,7 +36,6 @@ public class TimeUtils {
 
 	public static String getDate(long unixtime) {
 		Calendar cal = Calendar.getInstance();
-		unixtime = unixtime;
 		cal.setTimeInMillis(unixtime);
 		int month = cal.get(Calendar.MONTH) + 1;
 		String s = cal.get(Calendar.YEAR) + "/" + month + "/"

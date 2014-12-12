@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import pt.isec.gps.g22.sleeper.core.TimeUtils;
+import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
 
 public class CustomAdapter extends BaseAdapter {
 	

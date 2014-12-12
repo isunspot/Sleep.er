@@ -12,7 +12,7 @@ import pt.isec.gps.g22.sleeper.core.Profile;
 import pt.isec.gps.g22.sleeper.core.SleepDelta;
 import pt.isec.gps.g22.sleeper.core.SleepDuration;
 import pt.isec.gps.g22.sleeper.core.SleepQuality;
-import pt.isec.gps.g22.sleeper.core.TimeUtils;
+import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
 
 public class WeeklyViewUtils {
 	

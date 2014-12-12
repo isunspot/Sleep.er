@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import pt.isec.gps.g22.sleeper.core.Profile;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
-import pt.isec.gps.g22.sleeper.core.TimeUtils;
+import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
 import pt.isec.gps.g22.sleeper.ui.R;
 
 public class ProfileActivity extends Activity {

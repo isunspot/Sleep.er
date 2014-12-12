@@ -1,7 +1,9 @@
 package pt.isec.gps.g22.sleeper.ui;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
+import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.core.TimeUtils;
 import android.app.ActionBar;
@@ -12,7 +14,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class DayView extends Activity {
 
@@ -27,14 +28,14 @@ public class DayView extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_day_view);
 		
-		sleeper = (SleeperApp)getApplication();
+		sleeper = (SleeperApp) getApplication();
 		
 		Intent intent = getIntent();		
 		day = intent.getLongExtra("day", -1);
 		
 		tvDay = (TextView) findViewById(R.id.tvDay);
 	    dayViewList = (ListView) findViewById(R.id.DayViewList);	
-	    day = day*1000;
+	    day = day * 1000;
 	    tvDay.setText(TimeUtils.getDate(day));
 	    tvInsert = (TextView) findViewById(R.id.tvInsert);
 	    hideActionBar();
@@ -48,6 +49,15 @@ public class DayView extends Activity {
 				startActivity(intent);
 			}
 	    });
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		if (customAdapter.listRecords != null) {
+			customAdapter.refresAdapter(new ArrayList<DayRecord>(customAdapter.listRecords));
+		}
 	}
 	
 	private void setInfo() {

@@ -89,8 +89,8 @@ public class WeeklyViewUtils {
 			
 			for (DayRecord record : records) {
 				final boolean recordInDay = 
-						(record.getSleepDate() >= weekDay.from && record.getSleepDate() <= weekDay.until) ||
-						(record.getWakeupDate() >= weekDay.from && record.getWakeupDate() <= weekDay.until);
+					(record.getSleepDate() >= weekDay.from && record.getSleepDate() <= weekDay.until) ||
+					(record.getWakeupDate() >= weekDay.from && record.getWakeupDate() <= weekDay.until);
 
 				if (recordInDay) { 
 					dayRecords.add(record);

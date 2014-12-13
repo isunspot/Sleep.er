@@ -25,6 +25,7 @@ import pt.isec.gps.g22.sleeper.core.Profile;
 import pt.isec.gps.g22.sleeper.core.SleepQuality;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
+import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAO;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAO;
 import android.app.Activity;
@@ -35,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidplot.ui.SeriesRenderer;
 import com.androidplot.xy.BarFormatter;
@@ -61,8 +63,8 @@ public class WeeklyViewActivity extends Activity {
 	private long weekStart;
 	private List<List<SeriesValue>> dayValuesList;
 	private long weekSleepDebt;
-	private long minTimeSleptInADay;
-	private long maxTimeSleptInADay;
+	private TimeDelta minTimeSleptInADay;
+	private TimeDelta maxTimeSleptInADay;
 	private ExhaustionLevel averageExhaustionLevel;
 	private SleepQuality averageSleepQuality;
 
@@ -195,6 +197,9 @@ public class WeeklyViewActivity extends Activity {
 						final int x = new Double(plot.getGraphWidget().getXVal(value)).intValue();
 						
 						long day = weekStart + x * WeeklyViewUtils.DAY_SECONDS;
+						Calendar cal = Calendar.getInstance();
+						cal.setTimeInMillis(day);
+												
 						Intent intent = new Intent(WeeklyViewActivity.this, DayView.class);
 						intent.putExtra("day", day);
 	            		startActivity(intent);

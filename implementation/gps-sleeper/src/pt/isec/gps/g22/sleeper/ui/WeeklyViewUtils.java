@@ -1,8 +1,11 @@
 package pt.isec.gps.g22.sleeper.ui;
 
+import static pt.isec.gps.g22.sleeper.core.time.TimeDelta.duration;
+import static pt.isec.gps.g22.sleeper.core.time.TimeDelta.fromSeconds;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -13,24 +16,37 @@ import pt.isec.gps.g22.sleeper.core.SleepDelta;
 import pt.isec.gps.g22.sleeper.core.SleepDuration;
 import pt.isec.gps.g22.sleeper.core.SleepQuality;
 import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
+import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
+import pt.isec.gps.g22.sleeper.core.time.DateTime;
 
 public class WeeklyViewUtils {
 	
-	static final int MINUTE_SECONDS = 60;
-	static final int HOUR_SECONDS = 60 * MINUTE_SECONDS;
-	static final int DAY_SECONDS = 24 * HOUR_SECONDS;
-	static final int WEEK_SECONDS = 7 * DAY_SECONDS;
+	@Deprecated static final int MINUTE_SECONDS = 60;
+	@Deprecated static final int HOUR_SECONDS = 60 * MINUTE_SECONDS;
+	@Deprecated static final int DAY_SECONDS = 24 * HOUR_SECONDS;
+	@Deprecated static final int WEEK_SECONDS = 7 * DAY_SECONDS;
 	
-	static long getWeekStart(final long now, final long dayStart) {
-		final Calendar cal = Calendar.getInstance();
-		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-		cal.setTime(new Date(now * 1000)); // Date accepts milliseconds
-		final int dayOfWeek = (cal.get(Calendar.DAY_OF_WEEK) - 1) * DAY_SECONDS; // Sunday is 1
-		final int hours = cal.get(Calendar.HOUR_OF_DAY) * HOUR_SECONDS;
-		final int minutes = cal.get(Calendar.MINUTE) * MINUTE_SECONDS;
+	static final TimeDelta MINUS_1_SECOND = TimeDelta.duration(0, 0, 1, false);
+	static final TimeDelta MINUTE = TimeDelta.duration(0, 1);
+	static final TimeDelta HOUR = TimeDelta.duration(1);
+	static final TimeDelta DAY = TimeDelta.duration(24);
+	static final TimeDelta WEEK = TimeDelta.duration(7 * 24);
+	
+	static DateTime getWeekStart(final DateTime now, final DateTime dayStart) {
+		final Calendar cal = now.asCalendar();
+		final int dayOfWeek = (cal.get(Calendar.DAY_OF_WEEK) - 1) * DAY.asSeconds(); // Sunday is 1
+		final int days = (cal.get(Calendar.DAY_OF_WEEK) - 1);
+		final int hours = cal.get(Calendar.HOUR_OF_DAY) * HOUR.asSeconds();
+		final int minutes = cal.get(Calendar.MINUTE) * MINUTE.asSeconds();
 		final int seconds = cal.get(Calendar.SECOND);
 		
-		return now - dayOfWeek - hours - minutes - seconds - (HOUR_SECONDS - dayStart);
+		
+		//return now - dayOfWeek - hours - minutes - seconds - (HOUR_SECONDS - dayStart);
+		return now
+				.add(duration(days * 24, false))
+				.add(duration(hours, false))
+				.add(duration(0, minutes, false))
+				.add(duration(0, 0, seconds, false));
 	}
 	
 	/**
@@ -103,7 +119,7 @@ public class WeeklyViewUtils {
 			/*
 			 * Calculate the optimum waking time and the sleep debt
 			 */
-			long optimumWakingTime = 0;
+			DateTime optimumWakingTime;
 			long debt = 0;
 			if (dayRecords.size() == 0) { // didn't sleep
 				optimumWakingTime = optimumWakingTime(weekDay.from, profile, accumDebt, exhaustionLevel, sleepQuality, now);
@@ -112,7 +128,7 @@ public class WeeklyViewUtils {
 				optimumWakingTime = optimumWakingTime(dayRecords.get(0).getSleepDate(), profile, accumDebt, exhaustionLevel, sleepQuality, now);
 				debt = optimumWakingTime - dayRecords.get(0).getWakeupDate();
 			} else { // multiple sleep periods
-				final long sleepSum = sleepSum(records); // Time slept during the day
+				final TimeDelta sleepSum = sleepSum(records); // Time slept during the day
 				long wakeTimeSinceDayStart = optimumWakingTime(weekDay.from, profile, accumDebt, exhaustionLevel, sleepQuality, now);
 				long lastPeriodDebt = (wakeTimeSinceDayStart - weekDay.from) - sleepSum;
 				debt = dayRecords.get(dayRecords.size() - 1).getWakeupDate() + lastPeriodDebt;
@@ -156,17 +172,17 @@ public class WeeklyViewUtils {
 	 * @param chartDays an array of chart days
 	 * @return the minimum time slept in a day
 	 */
-	static int getMinTimeSleptInADay(final ChartDay[] chartDays) {
+	static TimeDelta getMinTimeSleptInADay(final ChartDay[] chartDays) {
 		if (chartDays.length < 1) {
 			throw new IllegalArgumentException("Invalid chart days");
 		}
 		
-		int min = sleepSum(chartDays[0].records);
+		TimeDelta min = sleepSum(chartDays[0].records);
 		
 		for (int i = 1; i < chartDays.length; i++) {
-			int slept = sleepSum(chartDays[i].records);
+			TimeDelta slept = sleepSum(chartDays[i].records);
 			
-			if (slept < min) {
+			if (slept.compareTo(min) < 0) {
 				min = slept;
 			}
 		}
@@ -179,17 +195,17 @@ public class WeeklyViewUtils {
 	 * @param chartDays an array of chart days
 	 * @return the maximum time slept in a day
 	 */
-	static int getMaxTimeSleptInADay(final ChartDay[] chartDays) {
+	static TimeDelta getMaxTimeSleptInADay(final ChartDay[] chartDays) {
 		if (chartDays.length < 1) {
 			throw new IllegalArgumentException("Invalid chart days");
 		}
 		
-		int max = sleepSum(chartDays[0].records);
+		TimeDelta max = sleepSum(chartDays[0].records);
 		
 		for (int i = 1; i < chartDays.length; i++) {
-			int slept = sleepSum(chartDays[i].records);
+			final TimeDelta slept = sleepSum(chartDays[i].records);
 			
-			if (slept > max) {
+			if (slept.compareTo(max) > 0) {
 				max = slept;
 			}
 		}
@@ -202,10 +218,10 @@ public class WeeklyViewUtils {
 	 * @param records the day records list
 	 * @return the sum of the time slept in minutes
 	 */
-	static int sleepSum(final List<DayRecord> records) {
-		int sleepSum = 0;
+	static TimeDelta sleepSum(final List<DayRecord> records) {
+		TimeDelta sleepSum = fromSeconds(0);
 		for (DayRecord record : records) {
-			sleepSum += record.getWakeupDate() - record.getSleepDate();
+			sleepSum = sleepSum.add(fromSeconds(record.getWakeupDate() - record.getSleepDate()));
 		}
 		
 		return sleepSum;
@@ -382,14 +398,14 @@ public class WeeklyViewUtils {
 	 * @param sleepQuality the sleep quality of the previous period
 	 * @return the optimum waking time
 	 */
-	static long optimumWakingTime(final long start, final Profile profile, final long accumDebt, final ExhaustionLevel exhaustionLevel, 
+	static DateTime optimumWakingTime(final DateTime start, final Profile profile, final TimeDelta accumDebt, final ExhaustionLevel exhaustionLevel, 
 			final SleepQuality sleepQuality, final long now) {
 		final boolean isMale = profile.getGender() == 0;
 		final long age = TimeUtils.ageFromDateOfBirth(profile.getDateOfBirth(), now);
-		long base = SleepDuration.getDuration(age, isMale) * 60;
-		long delta = SleepDelta.getDelta(accumDebt, exhaustionLevel, sleepQuality) * 60;
+		final TimeDelta base = SleepDuration.getTimeDelta(age, isMale);
+		final TimeDelta delta = SleepDelta.getDelta(accumDebt, exhaustionLevel, sleepQuality);
 		
-		return start + base + delta;
+		return start.add(base).add(delta);
 	}
 	
 	/**
@@ -397,12 +413,11 @@ public class WeeklyViewUtils {
 	 * @param start the time when the week starts
 	 * @return the list of week days the correspond to the week
 	 */
-	static List<WeekDay> getWeek(final long start) {
+	static List<WeekDay> getWeek(DateTime start) {
 		final List<WeekDay> week = new ArrayList<WeekDay>(7);
-		long seconds = start;
 		for (int i = 0; i < 7; i++) {
-			week.add(new WeekDay(seconds, seconds + DAY_SECONDS - 1));
-			seconds += DAY_SECONDS;
+			week.add(new WeekDay(start, start.add(DAY).add(MINUS_1_SECOND)));
+			start = start.add(DAY);
 		}
 		
 		return week;
@@ -413,10 +428,10 @@ public class WeeklyViewUtils {
  * Represents a week day
  */
 class WeekDay {
-	final long from;
-	final long until;
+	final DateTime from;
+	final DateTime until;
 
-	public WeekDay(final long from, final long until) {
+	public WeekDay(final DateTime from, final DateTime until) {
 		super();
 		this.from = from;
 		this.until = until;
@@ -427,14 +442,14 @@ class WeekDay {
  * Represents a day in the bar chart
  */
 class ChartDay {
-	final long from;
-	final long until;
-	final long debt;
-	final long accumulatedDebt;
-	final long optimumWakingTime;
+	final DateTime from;
+	final DateTime until;
+	final TimeDelta debt;
+	final TimeDelta accumulatedDebt;
+	final DateTime optimumWakingTime;
 	final List<DayRecord> records;
 	
-	public ChartDay(final long from, final long until, final long debt, final long accumulatedDebt, final long optimumWakingTime, final List<DayRecord> records) {
+	public ChartDay(final DateTime from, final DateTime until, final TimeDelta debt, final TimeDelta accumulatedDebt, final DateTime optimumWakingTime, final List<DayRecord> records) {
 		super();
 		this.from = from;
 		this.until = until;

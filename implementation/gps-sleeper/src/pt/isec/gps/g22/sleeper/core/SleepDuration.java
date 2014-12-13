@@ -1,15 +1,17 @@
 package pt.isec.gps.g22.sleeper.core;
 
-import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.duration;
+import static pt.isec.gps.g22.sleeper.core.time.TimeDelta.duration;
+import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
 
 /**
  * 
  */
 public class SleepDuration {
-	private final int minAge, maxAge, minMale, maxMale, minFemale, maxFemale;
+	private final int minAge, maxAge;
+	private final TimeDelta minMale, maxMale, minFemale, maxFemale;
 	
-	private SleepDuration(int minAge, int maxAge, int minMale,
-			int maxMale, int minFemale, int maxFemale) {
+	private SleepDuration(int minAge, int maxAge, TimeDelta minMale,
+			TimeDelta maxMale, TimeDelta minFemale, TimeDelta maxFemale) {
 		this.minAge = minAge;
 		this.maxAge = maxAge;
 		this.minMale = minMale;
@@ -24,12 +26,12 @@ public class SleepDuration {
 		return age >= minAge && age <= maxAge;
 	}
 	
-	int meanDuration(final boolean male) {
+	TimeDelta meanTimeDelta(final boolean male) {
 		return male ? mean(minMale, maxMale) : mean(minFemale, maxFemale);
 	}
 	
-	static int mean(final int min, final int max) {
-		return (min + max) / 2;
+	static TimeDelta mean(final TimeDelta min, final TimeDelta max) {
+		return TimeDelta.fromSeconds((min.asSeconds() + max.asSeconds()) / 2);
 	}
 	
 	static {
@@ -39,11 +41,11 @@ public class SleepDuration {
 		durations[2] = new SleepDuration(66, 120, duration(8), duration(9), duration(8, 30), duration(9, 30));
 	}
 	
-	public static long getDuration(final long age, final boolean male) {
+	public static TimeDelta getTimeDelta(final long age, final boolean male) {
 		for(int i = 0; i < durations.length; i++) {
 			final SleepDuration duration = durations[i];
 			if (duration.contains(age)) {
-				return duration.meanDuration(male);
+				return duration.meanTimeDelta(male);
 			}
 		}
 		

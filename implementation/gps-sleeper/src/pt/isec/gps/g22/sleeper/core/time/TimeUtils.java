@@ -6,14 +6,6 @@ import java.util.Calendar;
  * Time utility methods
  */
 public class TimeUtils {
-	public static int duration(final int hours) {
-		return duration(hours, 0);
-	}
-
-	public static int duration(final int hours, final int minutes) {
-		return hours * 60 + minutes;
-	}
-	
 	public static String formatDuration(final long value) {
 		final long valueMinutes = value / 60;
 		

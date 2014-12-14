@@ -1,5 +1,7 @@
 package pt.isec.gps.g22.sleeper.ui;
 
+import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.formatHoursMinutes;
+
 import java.util.Calendar;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
@@ -7,6 +9,7 @@ import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.core.time.DateTime;
 import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
 import pt.isec.gps.g22.sleeper.core.time.TimeOfDay;
+import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
@@ -35,7 +38,6 @@ public class DailyRecordActivity extends Activity {
 	DateTime day;
 	DayRecord dayRecord;
 	Boolean editMode;
-//	int sleepHour, sleepMin, wakeupHour, wakeupMin;
 	TimeOfDay sleep, wakeup;
 	
 	@Override
@@ -67,7 +69,7 @@ public class DailyRecordActivity extends Activity {
 	    sleepHourLayout.setOnClickListener(new OnClickListener() {
 	        @Override
 	        public void onClick(View v) {
-	    	    DialogFragment newFragment = new TimePickerFragment(1);
+	    	    DialogFragment newFragment = new TimePickerFragment(FragmentType.SLEEP);
 	    	    newFragment.show(getFragmentManager(), "timePickerSH");
 	        }
 	    });
@@ -75,7 +77,7 @@ public class DailyRecordActivity extends Activity {
 	    wakeupHourLayout.setOnClickListener(new OnClickListener() {
 	        @Override
 	        public void onClick(View v) {
-	    	    DialogFragment newFragment = new TimePickerFragment(2);
+	    	    DialogFragment newFragment = new TimePickerFragment(FragmentType.WAKEUP);
 	    	    newFragment.show(getFragmentManager(), "timePickerWH");
 	        }
 	    });
@@ -100,7 +102,7 @@ public class DailyRecordActivity extends Activity {
     }
 	
 	private DayRecord setDayRecord(DayRecord dayRecord){
-		final DayRecord tempRecord = dayRecord == null ? new DayRecord() : dayRecord;
+		final DayRecord record = dayRecord == null ? new DayRecord() : dayRecord;
 		
         final DateTime sleepTime = DateTime.fromDateTime(
         		day.getYear(),
@@ -109,8 +111,8 @@ public class DailyRecordActivity extends Activity {
         		sleep.getHours(), 
         		sleep.getMinutes(), 0);
         
-		tempRecord.setSleepDate(sleepTime.toUnixTimestamp());
-		tempRecord.setExhaustion((int) rbExhaustion.getRating());
+		record.setSleepDate(sleepTime.toUnixTimestamp());
+		record.setExhaustion((int) rbExhaustion.getRating());
 				
 		DateTime wakeupTime = DateTime.fromDateTime(
 				day.getYear(),
@@ -123,10 +125,10 @@ public class DailyRecordActivity extends Activity {
 			wakeupTime = wakeupTime.add(TimeDelta.duration(24));
 		}
 			
-		tempRecord.setWakeupDate(wakeupTime.toUnixTimestamp());
-		tempRecord.setSleepQuality((int) rbQualitySleep.getRating());
+		record.setWakeupDate(wakeupTime.toUnixTimestamp());
+		record.setSleepQuality((int) rbQualitySleep.getRating());
 		
-		return tempRecord;
+		return record;
 	}
 	
 	private void populateFields(int idDayRecord){
@@ -136,12 +138,12 @@ public class DailyRecordActivity extends Activity {
 			if(dayRecord != null)
 			{
 				final DateTime sleepDate = DateTime.fromSeconds(dayRecord.getSleepDate());
-				sleep = TimeOfDay.at(sleepDate.getHours(), sleepDate.getMinutes(), 0); 
+				sleep = TimeOfDay.at(sleepDate.getHours(), sleepDate.getMinutes()); 
 			    String sleepHour = (String) android.text.format.DateFormat.format("hh:mm", sleepDate.asCalendar().getTime());
 			    tvSleepHourValue.setText(sleepHour);
 			    
 			    final DateTime wakeupDate = DateTime.fromSeconds(dayRecord.getWakeupDate());
-			    sleep = TimeOfDay.at(wakeupDate.getHours(), wakeupDate.getMinutes(), 0);
+			    sleep = TimeOfDay.at(wakeupDate.getHours(), wakeupDate.getMinutes());
 			    String wakeupHour = (String) android.text.format.DateFormat.format("hh:mm", wakeupDate.asCalendar().getTime());
 			    tvWakeupHourValue.setText(wakeupHour);
 			}
@@ -149,59 +151,43 @@ public class DailyRecordActivity extends Activity {
 	}
 	
     public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
-    	int type;
-    	public TimePickerFragment(int type) {
+    	FragmentType type;
+    	public TimePickerFragment(FragmentType type) {
     		this.type = type;
     	}
     	
     	@Override
     	public Dialog onCreateDialog(Bundle savedInstanceState) {
-    		final Calendar c = Calendar.getInstance();
-    		int hour, minute;
+    		TimeOfDay time;
     		    		
-    		if(type==1) {
+    		if(type == FragmentType.SLEEP) {
     			if(dayRecord != null) {
-    			    c.setTimeInMillis(dayRecord.getSleepDate()*1000);
+    			    time = DateTime.fromSeconds(dayRecord.getSleepDate()).toTimeOfDay();
     			} else {
-    				c.set(Calendar.HOUR_OF_DAY, 23);
-    				c.set(Calendar.MINUTE, 00);
+    				time = TimeOfDay.at(23, 0);
     			}
     		} else {
-        		if(type==2) {
-        			if(dayRecord != null) {
-        			    c.setTimeInMillis(dayRecord.getWakeupDate()*1000);
-        			} else {
-        				c.set(Calendar.HOUR_OF_DAY, 8);
-        				c.set(Calendar.MINUTE, 00);
-        			}
-        		}
+    			if(dayRecord != null) {
+    				time = DateTime.fromSeconds(dayRecord.getWakeupDate()).toTimeOfDay();
+    			} else {
+    				time = TimeOfDay.at(8, 0);
+    			}
     		}
     		
-			hour = c.get(Calendar.HOUR_OF_DAY);
-			minute = c.get(Calendar.MINUTE);
-
-    		return new TimePickerDialog(getActivity(), this, hour, minute,DateFormat.is24HourFormat(getActivity()));
+    		return new TimePickerDialog(getActivity(), this, time.getHours(), time.getMinutes(), DateFormat.is24HourFormat(getActivity()));
     	}
 
+    	@Override
     	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
     		if(view.isShown()) {
-				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
-				cal.set(Calendar.MINUTE, minute);
-    			if(type == 1) {
-			    	String sSleepHour = (String) android.text.format.DateFormat.format("hh:mm", cal.getTime());
-			    	tvSleepHourValue.setText(sSleepHour);
-//			    	sleepHour = hourOfDay;
-//			    	sleepMin = minute;
-			    	sleep = TimeOfDay.at(hourOfDay, minute, 0);
+				final TimeOfDay time = TimeOfDay.at(hourOfDay, minute);
+				
+    			if(type == FragmentType.SLEEP) {
+			    	tvSleepHourValue.setText(formatHoursMinutes(time));
+			    	sleep = time;
     			} else {
-    				if(type == 2) {
-    			    	String sWakeupHour = (String) android.text.format.DateFormat.format("hh:mm", cal.getTime());
-    			    	tvWakeupHourValue.setText(sWakeupHour);
-//    			    	wakeupHour = hourOfDay;
-//    			    	wakeupMin = minute;
-    			    	wakeup = TimeOfDay.at(hourOfDay, minute, 0);
-    				}
+			    	tvWakeupHourValue.setText(formatHoursMinutes(time));
+			    	wakeup = time;
     			}
     		}
     	}
@@ -226,5 +212,10 @@ public class DailyRecordActivity extends Activity {
             }
         }
     }
+    
+	private enum FragmentType {
+		SLEEP,
+		WAKEUP
+	}
 	
 }

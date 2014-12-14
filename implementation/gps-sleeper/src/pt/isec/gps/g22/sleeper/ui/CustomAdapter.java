@@ -50,16 +50,16 @@ public class CustomAdapter extends BaseAdapter {
 			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 			view = inflater.inflate(R.layout.list_item, parent, false);
 		}
-        final DayRecord dayRecord = listRecords.get(index);
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(dayRecord.getSleepDate()*1000);
-        String str = (String) android.text.format.DateFormat.format("hh:mm", cal.getTime());
+        
+		final DayRecord dayRecord = listRecords.get(index);
+		final DateTime sleep = DateTime.fromSeconds(dayRecord.getSleepDate());
+        String str = (String) android.text.format.DateFormat.format("hh:mm", sleep.toUnixTimestamp());
         
         TextView tvStartHour = (TextView) view.findViewById(R.id.tvStartHour);
         tvStartHour.setText(str);
   
-        cal.setTimeInMillis(dayRecord.getWakeupDate()*1000);
-        str = (String) android.text.format.DateFormat.format("hh:mm", cal.getTime());
+        final DateTime wakeup = DateTime.fromSeconds(dayRecord.getWakeupDate());
+        str = (String) android.text.format.DateFormat.format("hh:mm", wakeup.toUnixTimestamp());
         
         TextView tvEndHour = (TextView) view.findViewById(R.id.tvEndHour);
         tvEndHour.setText(str);

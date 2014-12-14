@@ -7,18 +7,20 @@ import java.util.Calendar;
  */
 public class TimeUtils {
 	
+	public static final String DATE_SEPARATOR = "-";
+	public static final String TIME_SEPARATOR = ":";
+	
 	public static String formatDuration(final TimeDelta value) {
-		final long valueMinutes = value.asSeconds() / 60;
+		final int minutes = value.asSeconds() / 60;
+		final int hours = minutes / 60;
 		
-		final long hours = valueMinutes / 60;
 		if (hours > 0) {
-			return hours + "h" + valueMinutes % 60;
+			return formatHoursMinutes(hours, minutes);
 		} else {
-			final long remaining = valueMinutes % 60;
-			return (remaining < 10 ? "0" + remaining : remaining) + "m";
+			return minutes % 60 + "m";
 		}
 	}
-
+	
 	public static TimeDelta ageFromDateOfBirth(final DateTime dateOfBirth, final DateTime now) {
 		if (dateOfBirth.after(now)) {
 			throw new IllegalArgumentException(
@@ -50,6 +52,18 @@ public class TimeUtils {
 			sb.append("0");
 		sb.append(minutes);
 		return sb.toString();
+	}
+	
+	public static String formatHoursMinutes(final TimeOfDay time) {
+		return formatHoursMinutes(time.getHours(), time.getMinutes());
+	}
+	
+	public static String formatHoursMinutes(final int hours, final int minutes) {
+		return pad(hours) + TIME_SEPARATOR + pad(minutes);
+	}
+	
+	public static String pad(final int value) {
+		return value < 10 ? "0" + value : Long.toString(value);
 	}
 
 	public static int minutesToHours(int time) {

@@ -2,18 +2,21 @@ package pt.isec.gps.g22.sleeper.ui;
 
 import java.util.Calendar;
 
-import pt.isec.gps.g22.sleeper.core.DayRecord;
-import pt.isec.gps.g22.sleeper.dal.DayRecordDAOImpl;
+import javax.xml.datatype.Duration;
 
+import pt.isec.gps.g22.sleeper.core.DayRecord;
+import pt.isec.gps.g22.sleeper.core.SleepQuality;
+import pt.isec.gps.g22.sleeper.core.time.DateTime;
+import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
+import pt.isec.gps.g22.sleeper.core.time.TimeOfDay;
+import pt.isec.gps.g22.sleeper.dal.DayRecordDAOImpl;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -37,29 +40,22 @@ public class SetAlarmActivity extends Activity {
 	public void setAlarm(View view) {
 		AlarmManager alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(this, AlarmReceiver.class);
-		
         
-		Calendar cal = Calendar.getInstance();
-		long millis = System.currentTimeMillis();
-        cal.setTimeInMillis(millis);
-        int hour = tpWakeHour.getCurrentHour();
-        int min = tpWakeHour.getCurrentMinute();
+        final TimeOfDay wakeupTime = TimeOfDay.at(tpWakeHour.getCurrentHour(), tpWakeHour.getCurrentMinute());
+        final DateTime now = DateTime.now();
+        final TimeOfDay nowTime = now.toTimeOfDay();
         
-        //Set calendar
-        if((hour <= cal.get(Calendar.HOUR_OF_DAY))&&(min <= cal.get(Calendar.MINUTE)))
-        	hour+=24;
-        
-        cal.set(Calendar.HOUR_OF_DAY,hour);
-        cal.set(Calendar.MINUTE,min);
-        cal.set(Calendar.SECOND, 0);    
-		
-        long sleepDate,wakeDate;
-        sleepDate = millis / 1000;
-        wakeDate = cal.getTimeInMillis() / 1000;
-        //Insert daily record
-		dayRecord = new DayRecord(sleepDate,wakeDate);
+        final DateTime wakeup;
+        if (wakeupTime.compareTo(nowTime) > 0) {
+        	wakeup = DateTime.fromDateTime(now.getYear(), now.getMonth(), now.getDay(), wakeupTime.getHours(), wakeupTime.getMinutes(), 0);
+        } else {
+        	final DateTime tomorrow = now.add(TimeDelta.duration(24));
+        	wakeup = DateTime.fromDateTime(tomorrow.getYear(), tomorrow.getMonth(), tomorrow.getDay(), wakeupTime.getHours(), wakeupTime.getMinutes(), 0);
+        }
+
+        dayRecord = new DayRecord(now.toUnixTimestamp(), wakeup.toUnixTimestamp());
 		dayRecord.setExhaustion((int)rbExhaustion.getRating());
-		dayRecord.setSleepQuality(2);
+		dayRecord.setSleepQuality(SleepQuality.MEDIUM.getLevel());
 				
 		dayRecordImp = new DayRecordDAOImpl(this);
 		dayRecord.setId(dayRecordImp.insertRecord(dayRecord));
@@ -67,9 +63,10 @@ public class SetAlarmActivity extends Activity {
 		//send id record to change the record on dismiss alarm
 		intent.putExtra("idDayRecord", dayRecord.getId());
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 		//Set alarm based on calendar
-        alarmMgr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-        Toast.makeText(this, "Set alarm:"+cal.getTime().toString(), Toast.LENGTH_SHORT).show();
+        alarmMgr.set(AlarmManager.RTC_WAKEUP, wakeup.toMillis(), pendingIntent);
+        Toast.makeText(this, "Set alarm: " + wakeup, Toast.LENGTH_SHORT).show();
         
 		finish();
     }

@@ -58,9 +58,7 @@ public class DayView extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-		if (customAdapter.listRecords != null) {
-			customAdapter.refresAdapter(new ArrayList<DayRecord>(customAdapter.listRecords));
-		}
+		setInfo();
 	}
 	
 	private void setInfo() {
@@ -78,6 +76,7 @@ public class DayView extends Activity {
 						day.toUnixTimestamp(), 
 						day.add(TimeDelta.duration(1)).toUnixTimestamp()));
 		dayViewList.setAdapter(customAdapter);
+		dayViewList.invalidate();
 	}
 	
     private void hideActionBar() {

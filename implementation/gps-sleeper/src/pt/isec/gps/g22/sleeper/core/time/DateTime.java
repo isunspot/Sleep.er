@@ -1,5 +1,8 @@
 package pt.isec.gps.g22.sleeper.core.time;
 
+import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.DATE_SEPARATOR;
+import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.TIME_SEPARATOR;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -78,6 +81,14 @@ public class DateTime implements Comparable<DateTime> {
 		return value;
 	}
 	
+	public long toMillis() {
+		return value * 1000;
+	}
+	
+	public TimeOfDay toTimeOfDay() {
+		return TimeOfDay.at(getHours(), getMinutes(), getSeconds());
+	}
+	
 	private Calendar getCalendar() {
 		if (calendar == null) {
 			calendar = Calendar.getInstance();
@@ -88,6 +99,12 @@ public class DateTime implements Comparable<DateTime> {
 		return calendar;
 	}
 	
+	@Override
+	public String toString() {
+		return getYear() + DATE_SEPARATOR + getMonth() + DATE_SEPARATOR + getDay() +
+				" " + getHours() + TIME_SEPARATOR + getMinutes() + TIME_SEPARATOR + getSeconds();
+	}
+
 	public static DateTime now() {
 		return new DateTime(System.currentTimeMillis() / 1000);
 	}
@@ -98,6 +115,10 @@ public class DateTime implements Comparable<DateTime> {
 	
 	public static DateTime fromDate(final int year, final int month, final int day) {
 		return fromDateTime(year, month, day, 0, 0, 0);
+	}
+	
+	public static DateTime fromDateTime(final DateTime date, final TimeOfDay time) {
+		return fromDateTime(date.getYear(), date.getMonth(), date.getDay(), time.getHours(), time.getMinutes(), 0);
 	}
 	
 	public static DateTime fromDateTime(final int year, final int month, final int day, final int hours, final int minutes, final int seconds) {

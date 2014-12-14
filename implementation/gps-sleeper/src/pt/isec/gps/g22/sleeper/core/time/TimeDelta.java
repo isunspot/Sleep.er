@@ -3,8 +3,8 @@ package pt.isec.gps.g22.sleeper.core.time;
 public class TimeDelta implements Comparable<TimeDelta> {
 	
 	private static final int SECONDS_MS = 1000;
-	private static final int MINUTES_MS = 60 * SECONDS_MS;
-	private static final int HOURS_MS = 60 * MINUTES_MS;
+	private static final int MINUTES_S = 60;
+	private static final int HOURS_S = 60 * MINUTES_S;
 	
 	private final long amount;
 
@@ -14,7 +14,7 @@ public class TimeDelta implements Comparable<TimeDelta> {
 	}
 	
 	public int asSeconds() {
-		return (int) amount * SECONDS_MS;
+		return (int) amount / SECONDS_MS;
 	}
 	
 	public boolean isPositive() {
@@ -25,13 +25,17 @@ public class TimeDelta implements Comparable<TimeDelta> {
 		return new TimeDelta(amount + another.amount);
 	}
 	
+	public TimeDelta subtract(final TimeDelta another) {
+		return new TimeDelta(amount - another.amount);
+	}
+	
 	@Override
 	public int compareTo(final TimeDelta another) {
 		return Long.valueOf(amount).compareTo(Long.valueOf(another.amount));
 	}
 	
 	public static TimeDelta fromSeconds(final long seconds) {
-		return new TimeDelta(seconds * SECONDS_MS);
+		return fromSeconds(seconds, true);
 	}
 	
 	public static TimeDelta fromSeconds(final long seconds, final boolean positive) {
@@ -55,11 +59,11 @@ public class TimeDelta implements Comparable<TimeDelta> {
 	}
 	
 	public static TimeDelta duration(final long hours, final long minutes, final long seconds) {
-		return fromSeconds(hours * HOURS_MS + minutes * MINUTES_MS + seconds * SECONDS_MS, true);
+		return duration(hours, minutes, seconds, true);
 	}
 	
 	public static TimeDelta duration(final long hours, final long minutes, final long seconds, final boolean positive) {
-		return fromSeconds(hours * HOURS_MS + minutes * MINUTES_MS + seconds * SECONDS_MS, positive);
+		return fromSeconds(hours * HOURS_S + minutes * MINUTES_S + seconds, positive);
 	}
 	
 }

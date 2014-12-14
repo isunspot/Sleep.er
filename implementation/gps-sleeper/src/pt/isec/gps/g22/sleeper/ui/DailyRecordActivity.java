@@ -4,9 +4,9 @@ import java.util.Calendar;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
-import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
-import pt.isec.gps.g22.sleeper.dal.DayRecordDAOImpl;
-import pt.isec.gps.g22.sleeper.ui.ProfileActivity.TimePickerFragment;
+import pt.isec.gps.g22.sleeper.core.time.DateTime;
+import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
+import pt.isec.gps.g22.sleeper.core.time.TimeOfDay;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,7 +17,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
@@ -33,10 +32,11 @@ public class DailyRecordActivity extends Activity {
 	LinearLayout sleepHourLayout,wakeupHourLayout;
 	TextView tvSleepHourValue,tvWakeupHourValue;
 	int idDayRecord;
-	long day;
+	DateTime day;
 	DayRecord dayRecord;
 	Boolean editMode;
-	int sleepHour, sleepMin, wakeupHour, wakeupMin;
+//	int sleepHour, sleepMin, wakeupHour, wakeupMin;
+	TimeOfDay sleep, wakeup;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,8 @@ public class DailyRecordActivity extends Activity {
 		
 		Intent intent = getIntent();		
 		idDayRecord  = intent.getIntExtra("idDayRecord", -1);
-		day = intent.getLongExtra("day", -1);
+		final long daySeconds = intent.getLongExtra("day", -1);
+		day = DateTime.fromSeconds(daySeconds);
 				
 		tvSleepHourValue = (TextView) findViewById(R.id.tvSleepHourValue);
 		tvWakeupHourValue = (TextView) findViewById(R.id.tvWakeupHourValue);		
@@ -99,34 +100,30 @@ public class DailyRecordActivity extends Activity {
     }
 	
 	private DayRecord setDayRecord(DayRecord dayRecord){
-		DayRecord tempRecord;
+		final DayRecord tempRecord = dayRecord == null ? new DayRecord() : dayRecord;
 		
-		if(dayRecord==null)
-			tempRecord= new DayRecord();
-		else
-			tempRecord = dayRecord;
-				
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(day*1000);
-               
-		//Set calendar        
-        cal.set(Calendar.HOUR_OF_DAY,sleepHour);
-        cal.set(Calendar.MINUTE,sleepMin);
-        cal.set(Calendar.SECOND, 0); 
+        final DateTime sleepTime = DateTime.fromDateTime(
+        		day.getYear(),
+        		day.getMonth(),
+        		day.getDay(),
+        		sleep.getHours(), 
+        		sleep.getMinutes(), 0);
         
-        
-		tempRecord.setSleepDate(cal.getTimeInMillis()/1000);
+		tempRecord.setSleepDate(sleepTime.toUnixTimestamp());
 		tempRecord.setExhaustion((int) rbExhaustion.getRating());
 				
-		//Set calendar
-		if((wakeupHour <= cal.get(Calendar.HOUR_OF_DAY))&&(wakeupMin <= cal.get(Calendar.MINUTE)))
-        	wakeupHour+=24;
+		DateTime wakeupTime = DateTime.fromDateTime(
+				day.getYear(),
+        		day.getMonth(),
+        		day.getDay(),
+        		wakeup.getHours(), 
+        		wakeup.getMinutes(), 0);
 		
-        cal.set(Calendar.HOUR_OF_DAY,wakeupHour);
-        cal.set(Calendar.MINUTE,wakeupMin);
-        cal.set(Calendar.SECOND, 0);
-		
-		tempRecord.setWakeupDate(cal.getTimeInMillis()/1000);
+		if (wakeup.compareTo(sleep) <= 0) {
+			wakeupTime = wakeupTime.add(TimeDelta.duration(24));
+		}
+			
+		tempRecord.setWakeupDate(wakeupTime.toUnixTimestamp());
 		tempRecord.setSleepQuality((int) rbQualitySleep.getRating());
 		
 		return tempRecord;
@@ -136,15 +133,16 @@ public class DailyRecordActivity extends Activity {
 		if(idDayRecord != -1)
 		{			
 			dayRecord = sleeperApp.getDayRecordDAO().loadDayRecord(idDayRecord);
-			if(dayRecord!=null)
+			if(dayRecord != null)
 			{
-				Calendar calendar = Calendar.getInstance();
-			    calendar.setTimeInMillis(dayRecord.getSleepDate()*1000);
-			    String sleepHour = (String) android.text.format.DateFormat.format("hh:mm", calendar.getTime());
+				final DateTime sleepDate = DateTime.fromSeconds(dayRecord.getSleepDate());
+				sleep = TimeOfDay.at(sleepDate.getHours(), sleepDate.getMinutes(), 0); 
+			    String sleepHour = (String) android.text.format.DateFormat.format("hh:mm", sleepDate.asCalendar().getTime());
 			    tvSleepHourValue.setText(sleepHour);
 			    
-			    calendar.setTimeInMillis(dayRecord.getWakeupDate()*1000);
-			    String wakeupHour = (String) android.text.format.DateFormat.format("hh:mm", calendar.getTime());
+			    final DateTime wakeupDate = DateTime.fromSeconds(dayRecord.getWakeupDate());
+			    sleep = TimeOfDay.at(wakeupDate.getHours(), wakeupDate.getMinutes(), 0);
+			    String wakeupHour = (String) android.text.format.DateFormat.format("hh:mm", wakeupDate.asCalendar().getTime());
 			    tvWakeupHourValue.setText(wakeupHour);
 			}
 		}
@@ -193,14 +191,16 @@ public class DailyRecordActivity extends Activity {
     			if(type == 1) {
 			    	String sSleepHour = (String) android.text.format.DateFormat.format("hh:mm", cal.getTime());
 			    	tvSleepHourValue.setText(sSleepHour);
-			    	sleepHour = hourOfDay;
-			    	sleepMin = minute;
+//			    	sleepHour = hourOfDay;
+//			    	sleepMin = minute;
+			    	sleep = TimeOfDay.at(hourOfDay, minute, 0);
     			} else {
     				if(type == 2) {
     			    	String sWakeupHour = (String) android.text.format.DateFormat.format("hh:mm", cal.getTime());
     			    	tvWakeupHourValue.setText(sWakeupHour);
-    			    	wakeupHour = hourOfDay;
-    			    	wakeupMin = minute;
+//    			    	wakeupHour = hourOfDay;
+//    			    	wakeupMin = minute;
+    			    	wakeup = TimeOfDay.at(hourOfDay, minute, 0);
     				}
     			}
     		}

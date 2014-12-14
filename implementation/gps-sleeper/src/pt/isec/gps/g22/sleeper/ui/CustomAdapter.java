@@ -5,6 +5,7 @@ import java.util.List;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
+import pt.isec.gps.g22.sleeper.core.time.DateTime;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,17 +14,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
 
 public class CustomAdapter extends BaseAdapter {
 	
 	Context context;
 	SleeperApp sleeper;
+	DateTime day;
 	List<DayRecord> listRecords;
 	
-	public CustomAdapter(Context context,SleeperApp sleeper,List<DayRecord> listRecords) {
+	public CustomAdapter(final Context context, final SleeperApp sleeper, final DateTime day, final List<DayRecord> listRecords) {
 		this.context = context;
 		this.sleeper = sleeper;
+		this.day = day;
 		this.listRecords = listRecords;
 	}
 	
@@ -68,9 +70,10 @@ public class CustomAdapter extends BaseAdapter {
         editLayout.setOnClickListener(new View.OnClickListener() {
         	@Override
         	public void onClick(View view) {
-        		Intent intent = new Intent(context,DailyRecordActivity.class);
+        		Intent intent = new Intent(context, DailyRecordActivity.class);
         		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         		intent.putExtra("idDayRecord", dayRecord.getId());
+        		intent.putExtra("day", day.toUnixTimestamp());
         		context.startActivity(intent);
         	}
         });

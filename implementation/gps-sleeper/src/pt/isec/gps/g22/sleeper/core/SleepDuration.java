@@ -7,6 +7,9 @@ import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
  * 
  */
 public class SleepDuration {
+	
+	private static final int YEAR = 365 * 24 * 60 * 60;
+	
 	private final int minAge, maxAge;
 	private final TimeDelta minMale, maxMale, minFemale, maxFemale;
 	
@@ -22,8 +25,8 @@ public class SleepDuration {
 	
 	private static SleepDuration[] durations;
 	
-	boolean contains(final long age) {
-		return age >= minAge && age <= maxAge;
+	boolean contains(final TimeDelta age) {
+		return age.compareTo(TimeDelta.fromSeconds(minAge * YEAR)) >= 0 && age.compareTo(TimeDelta.fromSeconds(maxAge * YEAR)) <= 0;
 	}
 	
 	TimeDelta meanTimeDelta(final boolean male) {
@@ -41,7 +44,7 @@ public class SleepDuration {
 		durations[2] = new SleepDuration(66, 120, duration(8), duration(9), duration(8, 30), duration(9, 30));
 	}
 	
-	public static TimeDelta getTimeDelta(final long age, final boolean male) {
+	public static TimeDelta getTimeDelta(final TimeDelta age, final boolean male) {
 		for(int i = 0; i < durations.length; i++) {
 			final SleepDuration duration = durations[i];
 			if (duration.contains(age)) {

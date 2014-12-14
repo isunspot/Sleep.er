@@ -5,6 +5,8 @@ import java.util.Calendar;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
+import pt.isec.gps.g22.sleeper.core.time.DateTime;
+import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
 import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -17,7 +19,7 @@ import android.widget.TextView;
 
 public class DayView extends Activity {
 
-	long day;
+	DateTime day;
 	TextView tvDay,tvInsert;
 	ListView dayViewList;
 	CustomAdapter customAdapter;
@@ -31,12 +33,13 @@ public class DayView extends Activity {
 		sleeper = (SleeperApp) getApplication();
 		
 		Intent intent = getIntent();		
-		day = intent.getLongExtra("day", -1);
+		final long daySeconds = intent.getLongExtra("day", -1);
+		day = DateTime.fromSeconds(daySeconds);
 		
 		tvDay = (TextView) findViewById(R.id.tvDay);
 	    dayViewList = (ListView) findViewById(R.id.DayViewList);	
-	    day = day * 1000;
-	    tvDay.setText(TimeUtils.getDate(day));
+
+	    tvDay.setText(TimeUtils.getDate(DateTime.fromSeconds(daySeconds)));
 	    tvInsert = (TextView) findViewById(R.id.tvInsert);
 	    hideActionBar();
 	    setInfo();
@@ -44,8 +47,8 @@ public class DayView extends Activity {
 	    tvInsert.setOnClickListener(new OnClickListener() {
 	    	@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(DayView.this,DailyRecordActivity.class);
-				intent.putExtra("day", day);
+				Intent intent = new Intent(DayView.this, DailyRecordActivity.class);
+				intent.putExtra("day", day.toUnixTimestamp());
 				startActivity(intent);
 			}
 	    });
@@ -61,14 +64,20 @@ public class DayView extends Activity {
 	}
 	
 	private void setInfo() {
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(day);
+		final Calendar cal = day.asCalendar();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
-		day = cal.getTimeInMillis()/1000;
-	      CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(),sleeper,sleeper.getDayRecordDAO().getRecords(day, day+86400));
-	      dayViewList.setAdapter(customAdapter);
+		cal.set(Calendar.MILLISECOND, 0);
+		
+		customAdapter = new CustomAdapter(
+				getApplicationContext(),
+				sleeper,
+				day,
+				sleeper.getDayRecordDAO().getRecords(
+						day.toUnixTimestamp(), 
+						day.add(TimeDelta.duration(1)).toUnixTimestamp()));
+		dayViewList.setAdapter(customAdapter);
 	}
 	
     private void hideActionBar() {

@@ -1,6 +1,9 @@
 package pt.isec.gps.g22.sleeper.ui;
 
+import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.formatDate;
+import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.formatDuration;
 import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.weeks;
+import static pt.isec.gps.g22.sleeper.ui.WeeklyViewUtils.DAY;
 import static pt.isec.gps.g22.sleeper.ui.WeeklyViewUtils.averageExhaustionLevel;
 import static pt.isec.gps.g22.sleeper.ui.WeeklyViewUtils.averageSleepQuality;
 import static pt.isec.gps.g22.sleeper.ui.WeeklyViewUtils.getChartDays;
@@ -15,8 +18,6 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
@@ -27,7 +28,6 @@ import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.core.time.DateTime;
 import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
 import pt.isec.gps.g22.sleeper.core.time.TimeOfDay;
-import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAO;
 import pt.isec.gps.g22.sleeper.dal.ProfileDAO;
 import android.app.Activity;
@@ -62,6 +62,7 @@ public class WeeklyViewActivity extends Activity {
 	static final int MIN_DISTANCE = 150;
 	
 	private DateTime weekStart;
+	private TimeOfDay dayStart;
 	private List<List<SeriesValue>> dayValuesList;
 	private TimeDelta weekSleepDebt;
 	private TimeDelta minTimeSleptInADay;
@@ -125,11 +126,13 @@ public class WeeklyViewActivity extends Activity {
 			@Override
 			public StringBuffer format(Object object, StringBuffer buffer,
 					FieldPosition field) {
-				int delta = 0; //2 * 60;
+				final boolean isStartOfDay = dayStart.toSeconds() == 0;
+				final TimeDelta delta = isStartOfDay ? TimeDelta.fromSeconds(0) : dayStart.asTimeDelta().subtract(DAY);
+				final int deltaMinutes = (int) (delta.asSeconds() / 60);
 				
-				int value = (int) (24 * 60 - delta - ((Double) object));
+				int value = (int) (24 * 60 + deltaMinutes - ((Double) object));
 				if (value < 0) {
-					value = 24 * 60 + value;
+					value = 1440 + value;
 				}
 				
 				if (value % 3 * 60 == 0) {
@@ -177,9 +180,12 @@ public class WeeklyViewActivity extends Activity {
 				case MotionEvent.ACTION_UP:
 					final float value = event.getAxisValue(MotionEvent.AXIS_X);
 					try {
-						final int x = Double.valueOf(plot.getGraphWidget().getXVal(value)).intValue();
+						final float compensatedValue = value + 25; // <-- magic bullshit
+						final int x = Double.valueOf(plot.getGraphWidget().getXVal(compensatedValue)).intValue();
 						
-						final DateTime day = weekStart.add(TimeDelta.duration(x * 24));
+						final TimeDelta dayStartDelta = WeeklyViewUtils.DAY.subtract(dayStart.asTimeDelta());
+						final DateTime day = weekStart.add(TimeDelta.duration(x * 24))
+								.add(dayStartDelta); // compensate for the day start
 												
 						Intent intent = new Intent(WeeklyViewActivity.this, DayView.class);
 						intent.putExtra("day", day.toUnixTimestamp());
@@ -194,20 +200,22 @@ public class WeeklyViewActivity extends Activity {
 			}
         	
         });
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
 		
 		final DateTime now = DateTime.now();
 		loadValues(now);
 		bindValues();
 	}
 	
-	private String getWeekStr(final DateTime weekStart){
-		final Calendar startCal = weekStart.asCalendar();
-		final Calendar endCal = weekStart.add(weeks(1)).asCalendar();
+	private String getChartTitle(final DateTime weekStart) {
+		final TimeDelta dayStartDelta = WeeklyViewUtils.DAY.subtract(dayStart.asTimeDelta());
+		final DateTime correctedWeekStart = weekStart.add(dayStartDelta); // compensate for the day start
 		
-		String str = startCal.get(Calendar.DAY_OF_MONTH) + "/" + (startCal.get(Calendar.MONTH) + 1) + "/"+startCal.get(Calendar.YEAR);
-		str += " to " + endCal.get(Calendar.DAY_OF_MONTH) + "/" + (endCal.get(Calendar.MONTH) + 1) + "/" + endCal.get(Calendar.YEAR);
-		
-		return str;
+		return formatDate(correctedWeekStart) + " to " + formatDate(correctedWeekStart.add(weeks(1)));
 	}
 
 	@Override
@@ -233,8 +241,6 @@ public class WeeklyViewActivity extends Activity {
 					weekStart = weekStart.add(weeks(1));
 					loadValues(weekStart);
 					bindValues();
-					plot.setTitle(getWeekStr(weekStart));
-					plot.redraw();					
 				}
 
 			} else {
@@ -247,9 +253,9 @@ public class WeeklyViewActivity extends Activity {
 	
 	private void loadValues(final DateTime now) {
 		final Profile profile = profileDAO.loadProfile();
-		final TimeOfDay dayStart = TimeOfDay.fromSeconds(profile.getFirstHourOfTheDay() * 60);
+		dayStart = TimeOfDay.fromMinutes(profile.getFirstHourOfTheDay());
 		weekStart = getWeekStart(now, dayStart);
-		plot.setTitle(getWeekStr(getWeekStart(now, dayStart)));
+		plot.setTitle(getChartTitle(getWeekStart(now, dayStart)));
 		final List<WeekDay> week = getWeek(weekStart);
 		final List<DayRecord> dayRecords = dayRecordDAO.getRecords(weekStart.toUnixTimestamp(), weekStart.add(weeks(1)).toUnixTimestamp());
 		final ChartDay[] chartDays = getChartDays(profile, dayRecords, week, now);
@@ -264,9 +270,9 @@ public class WeeklyViewActivity extends Activity {
 	}
 	
 	private void bindValues() {
-		txtViewMaxHours.setText(TimeUtils.formatDuration(maxTimeSleptInADay));
-		txtViewMinHours.setText(TimeUtils.formatDuration(minTimeSleptInADay));
-		txtViewSleepDebt.setText(TimeUtils.formatDuration(weekSleepDebt));
+		txtViewMaxHours.setText(formatDuration(maxTimeSleptInADay));
+		txtViewMinHours.setText(formatDuration(minTimeSleptInADay));
+		txtViewSleepDebt.setText(formatDuration(weekSleepDebt));
 		txtViewAvgExhaustion.setText(averageExhaustionLevel == null ? "0" : Integer.toString(averageExhaustionLevel.getLevel()));
 		txtViewAvgSleepQuality.setText(averageSleepQuality == null ? "0" : Integer.toString(averageSleepQuality.getLevel()));
 		

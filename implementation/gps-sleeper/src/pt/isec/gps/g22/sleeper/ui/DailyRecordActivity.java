@@ -143,7 +143,7 @@ public class DailyRecordActivity extends Activity {
 			    tvSleepHourValue.setText(sleepHour);
 			    
 			    final DateTime wakeupDate = DateTime.fromSeconds(dayRecord.getWakeupDate());
-			    sleep = TimeOfDay.at(wakeupDate.getHours(), wakeupDate.getMinutes());
+			    wakeup = TimeOfDay.at(wakeupDate.getHours(), wakeupDate.getMinutes());
 			    String wakeupHour = (String) android.text.format.DateFormat.format("hh:mm", wakeupDate.asCalendar().getTime());
 			    tvWakeupHourValue.setText(wakeupHour);
 			}

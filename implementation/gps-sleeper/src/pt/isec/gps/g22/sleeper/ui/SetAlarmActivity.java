@@ -47,10 +47,10 @@ public class SetAlarmActivity extends Activity {
         
         final DateTime wakeup;
         if (wakeupTime.compareTo(nowTime) > 0) {
-        	wakeup = DateTime.fromDateTime(now.getYear(), now.getMonth(), now.getDay(), wakeupTime.getHours(), wakeupTime.getMinutes(), 0);
+        	wakeup = DateTime.fromDateTime(now, wakeupTime);
         } else {
         	final DateTime tomorrow = now.add(TimeDelta.duration(24));
-        	wakeup = DateTime.fromDateTime(tomorrow.getYear(), tomorrow.getMonth(), tomorrow.getDay(), wakeupTime.getHours(), wakeupTime.getMinutes(), 0);
+        	wakeup = DateTime.fromDateTime(tomorrow, wakeupTime);
         }
 
         dayRecord = new DayRecord(now.toUnixTimestamp(), wakeup.toUnixTimestamp());

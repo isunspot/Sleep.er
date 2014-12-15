@@ -13,8 +13,8 @@ public class TimeDelta implements Comparable<TimeDelta> {
 		this.amount = amount;
 	}
 	
-	public int asSeconds() {
-		return (int) amount / SECONDS_MS;
+	public long asSeconds() {
+		return (amount / SECONDS_MS);
 	}
 	
 	public boolean isPositive() {
@@ -34,6 +34,14 @@ public class TimeDelta implements Comparable<TimeDelta> {
 		return Long.valueOf(amount).compareTo(Long.valueOf(another.amount));
 	}
 	
+	@Override
+	public String toString() {
+		return "TimeDelta [amount=" + asSeconds() + "]";
+	}
+
+	/*
+	 * Factory methods
+	 */
 	public static TimeDelta fromSeconds(final long seconds) {
 		return fromSeconds(seconds, true);
 	}

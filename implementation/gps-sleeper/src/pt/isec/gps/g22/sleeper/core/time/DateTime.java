@@ -25,11 +25,11 @@ public class DateTime implements Comparable<DateTime> {
 	}
 	
 	public int getMonth() {
-		return getCalendar().get(Calendar.MONTH);
+		return getCalendar().get(Calendar.MONTH) + 1;
 	}
 	
 	public int getDay() {
-		return getCalendar().get(Calendar.DAY_OF_MONTH) + 1;
+		return getCalendar().get(Calendar.DAY_OF_MONTH);
 	}
 	
 	public int getHours() {
@@ -101,7 +101,7 @@ public class DateTime implements Comparable<DateTime> {
 	
 	@Override
 	public String toString() {
-		return getYear() + DATE_SEPARATOR + getMonth() + DATE_SEPARATOR + getDay() +
+		return TimeUtils.formatDate(this) +
 				" " + getHours() + TIME_SEPARATOR + getMinutes() + TIME_SEPARATOR + getSeconds();
 	}
 
@@ -118,14 +118,14 @@ public class DateTime implements Comparable<DateTime> {
 	}
 	
 	public static DateTime fromDateTime(final DateTime date, final TimeOfDay time) {
-		return fromDateTime(date.getYear(), date.getMonth(), date.getDay(), time.getHours(), time.getMinutes(), 0);
+		return fromDateTime(date.getYear(), date.getMonth(), date.getDay(), time.getHours(), time.getMinutes(), time.getSeconds());
 	}
 	
 	public static DateTime fromDateTime(final int year, final int month, final int day, final int hours, final int minutes, final int seconds) {
 		final Calendar cal = Calendar.getInstance();
 		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 		cal.set(Calendar.YEAR, year);
-		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.MONTH, month - 1);
 		cal.set(Calendar.DAY_OF_MONTH, day);
 		cal.set(Calendar.HOUR_OF_DAY, hours);
 		cal.set(Calendar.MINUTE, minutes);

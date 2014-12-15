@@ -29,14 +29,12 @@ public class WeeklyViewUtils {
 	static DateTime getWeekStart(final DateTime now, final TimeOfDay dayStart) {
 		final Calendar cal = now.asCalendar();
 		final int days = (cal.get(Calendar.DAY_OF_WEEK) - 1);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
 		
-		return now
+		final boolean isStartOfDay = dayStart.toSeconds() == 0;
+		
+		return DateTime.fromDateTime(now, TimeOfDay.at(0, 0))
 				.add(duration(days * 24, false))
-				.add(dayStart.asTimeDelta().subtract(DAY));
+				.add(isStartOfDay ? TimeDelta.fromSeconds(0) : dayStart.asTimeDelta().subtract(DAY));
 	}
 	
 	/**
@@ -340,7 +338,7 @@ public class WeeklyViewUtils {
 				} else {
 					values.add(new SeriesValue(barValue(dayStart, dayStart), SeriesType.OVERSLEEP));
 				}
-				values.add(new SeriesValue(barValue(dayStart, wakeup), SeriesType.WAKE));	
+				values.add(new SeriesValue(barValue(dayStart, wakeup), SeriesType.WAKE));
 			} else if (optimumWakingTime.after(wakeup)) { // undersleep
 				if (wakeup.after(dayStart)) {
 					values.add(new SeriesValue(barValue(dayStart, dayStart), SeriesType.SLEEP));

@@ -1,5 +1,7 @@
 package pt.isec.gps.g22.sleeper.ui;
 
+import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.days;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -39,7 +41,7 @@ public class DayView extends Activity {
 		tvDay = (TextView) findViewById(R.id.tvDay);
 	    dayViewList = (ListView) findViewById(R.id.DayViewList);	
 
-	    tvDay.setText(TimeUtils.getDate(DateTime.fromSeconds(daySeconds)));
+	    tvDay.setText(TimeUtils.formatDate(day));
 	    tvInsert = (TextView) findViewById(R.id.tvInsert);
 	    hideActionBar();
 	    setInfo();
@@ -62,19 +64,13 @@ public class DayView extends Activity {
 	}
 	
 	private void setInfo() {
-		final Calendar cal = day.asCalendar();
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		
 		customAdapter = new CustomAdapter(
 				getApplicationContext(),
 				sleeper,
 				day,
 				sleeper.getDayRecordDAO().getRecords(
 						day.toUnixTimestamp(), 
-						day.add(TimeDelta.duration(1)).toUnixTimestamp()));
+						day.add(days(1)).toUnixTimestamp()));
 		dayViewList.setAdapter(customAdapter);
 		dayViewList.invalidate();
 	}

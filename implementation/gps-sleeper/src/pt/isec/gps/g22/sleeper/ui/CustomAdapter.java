@@ -1,6 +1,8 @@
 package pt.isec.gps.g22.sleeper.ui;
 
-import java.util.Calendar;
+import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.formatHoursMinutes;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
@@ -47,25 +49,23 @@ public class CustomAdapter extends BaseAdapter {
 	@Override
 	public View getView(int index, View view, final ViewGroup parent) {
 		if (view == null) {
-			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+			final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 			view = inflater.inflate(R.layout.list_item, parent, false);
 		}
         
 		final DayRecord dayRecord = listRecords.get(index);
 		final DateTime sleep = DateTime.fromSeconds(dayRecord.getSleepDate());
-        String str = (String) android.text.format.DateFormat.format("hh:mm", sleep.toUnixTimestamp());
         
-        TextView tvStartHour = (TextView) view.findViewById(R.id.tvStartHour);
-        tvStartHour.setText(str);
+        final TextView tvStartHour = (TextView) view.findViewById(R.id.tvStartHour);
+        tvStartHour.setText(formatHoursMinutes(sleep.toTimeOfDay()));
   
         final DateTime wakeup = DateTime.fromSeconds(dayRecord.getWakeupDate());
-        str = (String) android.text.format.DateFormat.format("hh:mm", wakeup.toUnixTimestamp());
         
-        TextView tvEndHour = (TextView) view.findViewById(R.id.tvEndHour);
-        tvEndHour.setText(str);
+        final TextView tvEndHour = (TextView) view.findViewById(R.id.tvEndHour);
+        tvEndHour.setText(formatHoursMinutes(wakeup.toTimeOfDay()));
   
-        LinearLayout editLayout = (LinearLayout) view.findViewById(R.id.LayoutEdit);
-        LinearLayout deleteLayout = (LinearLayout) view.findViewById(R.id.LayoutDelete);
+        final LinearLayout editLayout = (LinearLayout) view.findViewById(R.id.LayoutEdit);
+        final LinearLayout deleteLayout = (LinearLayout) view.findViewById(R.id.LayoutDelete);
         
         editLayout.setOnClickListener(new View.OnClickListener() {
         	@Override
@@ -83,14 +83,14 @@ public class CustomAdapter extends BaseAdapter {
         	public void onClick(View view) {
         		sleeper.getDayRecordDAO().deleteRecord(dayRecord);
         		listRecords.remove(dayRecord);
-        		refresAdapter(listRecords);
+        		refreshAdapter(new ArrayList<DayRecord>(listRecords));
         	}
         });
  
         return view;
 	}
 	
-	public synchronized void refresAdapter(List<DayRecord> dataRecords) {   
+	public synchronized void refreshAdapter(List<DayRecord> dataRecords) {   
 		listRecords.clear();
 		listRecords.addAll(dataRecords);
 	    notifyDataSetChanged();

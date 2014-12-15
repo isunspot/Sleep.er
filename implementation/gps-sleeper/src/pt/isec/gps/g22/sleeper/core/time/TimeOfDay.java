@@ -23,6 +23,10 @@ public class TimeOfDay implements Comparable<TimeOfDay> {
 		return value - getHours() * HOURS - getMinutes() * MINUTES;
 	}
 	
+	public int toSeconds() {
+		return value;
+	}
+	
 	public TimeDelta asTimeDelta() {
 		return TimeDelta.fromSeconds(value);
 	}
@@ -38,6 +42,10 @@ public class TimeOfDay implements Comparable<TimeOfDay> {
 	
 	public static TimeOfDay at(final int hours, final int minutes, final int seconds) {
 		return fromSeconds(hours * HOURS + minutes * MINUTES + seconds);
+	}
+	
+	public static TimeOfDay fromMinutes(final int minutes) {
+		return fromSeconds(minutes * 60);
 	}
 	
 	public static TimeOfDay fromSeconds(final int seconds) {

@@ -10,6 +10,7 @@ import pt.isec.gps.g22.sleeper.core.time.DateTime;
 import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
 import pt.isec.gps.g22.sleeper.core.time.TimeOfDay;
 import pt.isec.gps.g22.sleeper.dal.DayRecordDAOImpl;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -35,6 +36,8 @@ public class SetAlarmActivity extends Activity {
 		setContentView(R.layout.activity_set_alarm);
 		tpWakeHour = (TimePicker) findViewById(R.id.tpWakeHourDaily);
 		rbExhaustion = (RatingBar) findViewById(R.id.rbExhaustionDaily);
+		
+		hideActionBar();
 	}
 	
 	public void setAlarm(View view) {
@@ -69,6 +72,11 @@ public class SetAlarmActivity extends Activity {
         Toast.makeText(this, "Set alarm: " + wakeup, Toast.LENGTH_SHORT).show();
         
 		finish();
+    }
+	
+    private void hideActionBar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.hide();
     }
 	
 }

@@ -2,7 +2,9 @@ package pt.isec.gps.g22.sleeper.ui;
 
 import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.formatHoursMinutes;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
@@ -83,19 +85,27 @@ public class DailyRecordActivity extends Activity {
 	    });
 	}
 	
-	public void saveDailyRecord(View view) {				
+	public void saveDailyRecord(View view) {
+		String msg = "There is a overlapped record!";
+		List<DayRecord> tempList = sleeperApp.getDayRecordDAO().getAllRecords();
 		if(editMode) {
 			dayRecord = setDayRecord(dayRecord);
-			sleeperApp.getDayRecordDAO().updateRecord(dayRecord);
+			if(dayRecord.recordOverlap(tempList)) {
+				sleeperApp.getDayRecordDAO().updateRecord(dayRecord);
+				msg = "Daily record updated";
+			}
 		} else {
 			dayRecord = setDayRecord(null);
-			sleeperApp.getDayRecordDAO().insertRecord(dayRecord);
+			if(dayRecord.recordOverlap(tempList)) {
+				sleeperApp.getDayRecordDAO().insertRecord(dayRecord);
+				msg = "Daily record inserted";
+			}
 		}
 		      
-		Toast.makeText(this, "Daily record saved", Toast.LENGTH_SHORT).show();    
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();    
 		finish();
     }
-	
+		
     private void hideActionBar() {
         ActionBar actionBar = getActionBar();
         actionBar.hide();
@@ -139,12 +149,12 @@ public class DailyRecordActivity extends Activity {
 			{
 				final DateTime sleepDate = DateTime.fromSeconds(dayRecord.getSleepDate());
 				sleep = TimeOfDay.at(sleepDate.getHours(), sleepDate.getMinutes()); 
-			    String sleepHour = (String) android.text.format.DateFormat.format("hh:mm", sleepDate.asCalendar().getTime());
+			    String sleepHour = (String) android.text.format.DateFormat.format("HH:mm", sleepDate.asCalendar().getTime());
 			    tvSleepHourValue.setText(sleepHour);
 			    
 			    final DateTime wakeupDate = DateTime.fromSeconds(dayRecord.getWakeupDate());
 			    wakeup = TimeOfDay.at(wakeupDate.getHours(), wakeupDate.getMinutes());
-			    String wakeupHour = (String) android.text.format.DateFormat.format("hh:mm", wakeupDate.asCalendar().getTime());
+			    String wakeupHour = (String) android.text.format.DateFormat.format("HH:mm", wakeupDate.asCalendar().getTime());
 			    tvWakeupHourValue.setText(wakeupHour);
 			}
 		}

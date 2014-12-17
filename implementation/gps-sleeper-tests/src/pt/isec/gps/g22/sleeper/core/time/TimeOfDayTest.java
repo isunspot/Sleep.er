@@ -1,14 +1,17 @@
 package pt.isec.gps.g22.sleeper.core.time;
 
-import static org.junit.Assert.*;
+import android.test.AndroidTestCase;
 
-import org.junit.Test;
+public class TimeOfDayTest extends AndroidTestCase {
 
-import android.test.InstrumentationTestCase;
-
-public class TimeOfDayTest {
-
-	@Test
+    public void setUp() throws Exception {
+    	super.setUp();
+    }
+    
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+	
 	public void testHoursMinutesSecondsBuilder() {
 		final TimeOfDay tod = TimeOfDay.at(12, 23, 34);
 		

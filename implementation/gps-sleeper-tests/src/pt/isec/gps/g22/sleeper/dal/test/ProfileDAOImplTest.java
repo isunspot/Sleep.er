@@ -18,11 +18,6 @@ public class ProfileDAOImplTest extends InstrumentationTestCase {
         super.tearDown();
     }
 
-    public void testInsertInvalidProfile() throws Exception {
-        Profile profile = new Profile();
-        assertEquals("Not empty profile",-1,profileDAOImpl.insertProfile(profile));
-    }
-
     public void testInsertValidProfile() throws Exception {
         Profile profile = new Profile(1,488937600,300);
         assertEquals("Empty profile",1,profileDAOImpl.insertProfile(profile));

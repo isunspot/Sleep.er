@@ -71,23 +71,21 @@ public class DayRecord {
 		this.sleepQuality = sleepQuality;
 	}
 	
-	public boolean recordOverlap(List<DayRecord> tempList) {
+	public boolean recordOverlap(final List<DayRecord> tempList) {
 		if(tempList == null) {
 			return false;
 		} else {
-			for(DayRecord tempRecord : tempList) {
+			for(final DayRecord tempRecord : tempList) {
 				if(this.sleepDate > tempRecord.getSleepDate() && this.sleepDate < tempRecord.getWakeupDate()) // Intersection at the left side with another record
 					return true;
-				else
-					if(this.sleepDate < tempRecord.getSleepDate() && this.wakeupDate > tempRecord.getWakeupDate()) // This record overlaps a record entirely
-						return true;
-					else
-						if(this.wakeupDate > tempRecord.getSleepDate() && this.wakeupDate < tempRecord.getWakeupDate()) // Intersection at the right side with another record
-							return true;
-						else
-							if(this.sleepDate > tempRecord.getSleepDate() && this.wakeupDate < tempRecord.getWakeupDate()) // This record is overlapsed by another record
-								return true;
+				else if(this.sleepDate < tempRecord.getSleepDate() && this.wakeupDate > tempRecord.getWakeupDate()) // This record overlaps a record entirely
+					return true;
+				else if(this.wakeupDate > tempRecord.getSleepDate() && this.wakeupDate < tempRecord.getWakeupDate()) // Intersection at the right side with another record
+					return true;
+				else if(this.sleepDate > tempRecord.getSleepDate() && this.wakeupDate < tempRecord.getWakeupDate()) // This record is overlapped by another record
+					return true;
 			}
+
 			return false;
 		}			
 	}

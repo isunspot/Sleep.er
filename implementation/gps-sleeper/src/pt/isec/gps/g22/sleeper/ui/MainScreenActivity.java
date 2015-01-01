@@ -23,6 +23,8 @@ public class MainScreenActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_screen);
 		
+		ctx = this;
+		
 		hideActionBar();
 		
 		sleeper = (SleeperApp)getApplication();

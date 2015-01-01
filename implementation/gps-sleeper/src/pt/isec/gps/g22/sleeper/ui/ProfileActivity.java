@@ -52,6 +52,8 @@ public class ProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         
+        ctx = this;
+        
         sleeper = (SleeperApp)getApplication();
     	profile = sleeper.getProfile();
         

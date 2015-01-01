@@ -149,12 +149,12 @@ public class DailyRecordActivity extends Activity {
 			{
 				final DateTime sleepDate = DateTime.fromSeconds(dayRecord.getSleepDate());
 				sleep = TimeOfDay.at(sleepDate.getHours(), sleepDate.getMinutes()); 
-			    String sleepHour = (String) android.text.format.DateFormat.format("HH:mm", sleepDate.asCalendar().getTime());
+			    final String sleepHour = TimeUtils.formatHoursMinutes(sleepDate.toTimeOfDay());
 			    tvSleepHourValue.setText(sleepHour);
 			    
 			    final DateTime wakeupDate = DateTime.fromSeconds(dayRecord.getWakeupDate());
 			    wakeup = TimeOfDay.at(wakeupDate.getHours(), wakeupDate.getMinutes());
-			    String wakeupHour = (String) android.text.format.DateFormat.format("HH:mm", wakeupDate.asCalendar().getTime());
+			    final String wakeupHour = TimeUtils.formatHoursMinutes(wakeupDate.toTimeOfDay());
 			    tvWakeupHourValue.setText(wakeupHour);
 			}
 		}
@@ -162,7 +162,7 @@ public class DailyRecordActivity extends Activity {
 	
     public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
     	FragmentType type;
-    	public TimePickerFragment(FragmentType type) {
+    	public TimePickerFragment(final FragmentType type) {
     		this.type = type;
     	}
     	

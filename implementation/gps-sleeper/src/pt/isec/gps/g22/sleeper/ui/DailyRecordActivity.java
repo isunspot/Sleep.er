@@ -90,13 +90,13 @@ public class DailyRecordActivity extends Activity {
 		List<DayRecord> tempList = sleeperApp.getDayRecordDAO().getAllRecords();
 		if(editMode) {
 			dayRecord = setDayRecord(dayRecord);
-			if(dayRecord.recordOverlap(tempList)) {
+			if(!dayRecord.recordOverlap(tempList)) {
 				sleeperApp.getDayRecordDAO().updateRecord(dayRecord);
 				msg = "Daily record updated";
 			}
 		} else {
 			dayRecord = setDayRecord(null);
-			if(dayRecord.recordOverlap(tempList)) {
+			if(!dayRecord.recordOverlap(tempList)) {
 				sleeperApp.getDayRecordDAO().insertRecord(dayRecord);
 				msg = "Daily record inserted";
 			}

@@ -34,7 +34,7 @@
             android:textColor="#FFFFFF"
             android:textSize="22sp" />
 
-    </LinearLayout>
+    </LinearLayout> 
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,12 +66,13 @@
     <!-- android:timePickerMode="spinner" /> -->
     
         <LinearLayout
-        android:id="@+id/LayoutNext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fc8b21"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal" >
+            android:id="@+id/btsetAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fc8b21"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" 
+            android:onClick="setAlarm">
 
         <TextView
             android:id="@+id/tvNext"

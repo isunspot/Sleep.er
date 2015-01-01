@@ -1,6 +1,7 @@
 package pt.isec.gps.g22.sleeper.ui;
 
 import java.util.Calendar;
+import java.util.List;
 
 import javax.xml.datatype.Duration;
 
@@ -56,20 +57,27 @@ public class SetAlarmActivity extends Activity {
         	wakeup = DateTime.fromDateTime(tomorrow, wakeupTime);
         }
 
+        String msg = "There is a overlapped record!";
+        dayRecordImp = new DayRecordDAOImpl(this);
+		List<DayRecord> tempList = dayRecordImp.getAllRecords();
+		
         dayRecord = new DayRecord(now.toUnixTimestamp(), wakeup.toUnixTimestamp());
 		dayRecord.setExhaustion((int)rbExhaustion.getRating());
 		dayRecord.setSleepQuality(SleepQuality.MEDIUM.getLevel());
-				
-		dayRecordImp = new DayRecordDAOImpl(this);
-		dayRecord.setId(dayRecordImp.insertRecord(dayRecord));
+			
+		if(!dayRecord.recordOverlap(tempList)){
+			dayRecord.setId(dayRecordImp.insertRecord(dayRecord));
 		
-		//send id record to change the record on dismiss alarm
-		intent.putExtra("idDayRecord", dayRecord.getId());
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+			//send id record to change the record on dismiss alarm
+			intent.putExtra("idDayRecord", dayRecord.getId());
+			PendingIntent pendingIntent = PendingIntent.getBroadcast(this,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-		//Set alarm based on calendar
-        alarmMgr.set(AlarmManager.RTC_WAKEUP, wakeup.toMillis(), pendingIntent);
-        Toast.makeText(this, "Set alarm: " + wakeup, Toast.LENGTH_SHORT).show();
+			//Set alarm based on calendar
+			alarmMgr.set(AlarmManager.RTC_WAKEUP, wakeup.toMillis(), pendingIntent);
+			msg = "Set alarm: " + wakeup;
+		}
+		
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         
 		finish();
     }

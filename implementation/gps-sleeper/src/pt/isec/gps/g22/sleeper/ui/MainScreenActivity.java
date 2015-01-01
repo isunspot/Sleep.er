@@ -3,7 +3,9 @@ package pt.isec.gps.g22.sleeper.ui;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Camera.ShutterCallback;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,6 +16,7 @@ public class MainScreenActivity extends Activity {
 	
 	SleeperApp sleeper;
 	LinearLayout layoutSetAlarm,layoutWeeklyView,layoutGenericTips,layoutProfile;
+	private Context ctx;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +33,16 @@ public class MainScreenActivity extends Activity {
         layoutProfile = (LinearLayout)findViewById(R.id.LayoutProfile);
 		
 		if(!sleeper.profileDefined()) {
-			Intent intent = new Intent(MainScreenActivity.this,ProfileActivity.class);
+			Intent intent = new Intent(this, ProfileActivity.class);
 			startActivity(intent);
+			finish();
 		}
 		     
 		layoutSetAlarm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
             	if(sleeper.profileDefined()) {
-            		Intent intent = new Intent(MainScreenActivity.this, SetAlarmActivity.class);
+            		Intent intent = new Intent(ctx, SetAlarmActivity.class);
             		startActivity(intent);
             	} else {
             		profileNotDefinedToast();

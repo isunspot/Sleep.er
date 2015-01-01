@@ -16,7 +16,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -42,6 +44,8 @@ public class ProfileActivity extends Activity {
     int gender = 0;
     CharSequence genders[] = {"Male","Female"};
     long firstHourOfTheDay = 0;
+    
+    private Context ctx;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +118,8 @@ public class ProfileActivity extends Activity {
         	    	sleeper.getProfileDAO().insertProfile(profile);
         	    	sleeper.defineProfile();
         	    }
-        	    finish();
+        	    
+        	    startActivity(new Intent(ctx, MainScreenActivity.class));
             }
         });
     }

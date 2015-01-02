@@ -21,7 +21,7 @@ public class DayRecordDAOImpl implements DayRecordDAO {
     public List<DayRecord> getAllRecords() {
         db = dbHelper.getReadableDatabase();
         List<DayRecord> dayRecordList = null;
-        String query = "SELECT * FROM " + DayRecord.TABLE_NAME + ";";
+        String query = "SELECT * FROM " + DayRecord.TABLE_NAME + " ORDER BY " + DayRecord.COLUMN_SLEEPDATE + ";";
 
         Cursor cursor = db.rawQuery(query,null);
 
@@ -109,7 +109,7 @@ public class DayRecordDAOImpl implements DayRecordDAO {
 		
         String query = "SELECT * FROM " + DayRecord.TABLE_NAME; 
         		query += " WHERE " + DayRecord.COLUMN_WAKEUPDATE + " >= '" + start + " ' AND ";
-        		query += DayRecord.COLUMN_SLEEPDATE + " <= '" + end + "';";
+        		query += DayRecord.COLUMN_SLEEPDATE + " <= '" + end + "' ORDER BY " + DayRecord.COLUMN_SLEEPDATE + ";";
 
         Cursor cursor = db.rawQuery(query,null);
 

@@ -183,7 +183,9 @@ public class WeeklyViewActivity extends Activity {
 						final float compensatedValue = value + 25; // <-- magic bullshit
 						final int x = Double.valueOf(plot.getGraphWidget().getXVal(compensatedValue)).intValue();
 						
-						final TimeDelta dayStartDelta = WeeklyViewUtils.DAY.subtract(dayStart.asTimeDelta());
+						final TimeDelta dayStartDelta = dayStart.toSeconds() == 0 
+								? TimeDelta.fromSeconds(0)
+								: WeeklyViewUtils.DAY.subtract(dayStart.asTimeDelta());
 						final DateTime day = weekStart.add(TimeDelta.duration(x * 24))
 								.add(dayStartDelta); // compensate for the day start
 												
@@ -212,10 +214,13 @@ public class WeeklyViewActivity extends Activity {
 	}
 	
 	private String getChartTitle(final DateTime weekStart) {
-		final TimeDelta dayStartDelta = WeeklyViewUtils.DAY.subtract(dayStart.asTimeDelta());
+		final TimeDelta dayStartDelta = dayStart.toSeconds() == 0
+				? TimeDelta.fromSeconds(0)
+				: WeeklyViewUtils.DAY.subtract(dayStart.asTimeDelta());
 		final DateTime correctedWeekStart = weekStart.add(dayStartDelta); // compensate for the day start
 		
-		return formatDate(correctedWeekStart) + " to " + formatDate(correctedWeekStart.add(weeks(1)));
+		final TimeDelta weekDelta = TimeDelta.fromSeconds(weeks(1).asSeconds() - 1); // one second less to be the last second of the last day
+		return formatDate(correctedWeekStart) + " to " + formatDate(correctedWeekStart.add(weekDelta));
 	}
 
 	@Override
@@ -255,7 +260,7 @@ public class WeeklyViewActivity extends Activity {
 		final Profile profile = profileDAO.loadProfile();
 		dayStart = TimeOfDay.fromMinutes(profile.getFirstHourOfTheDay());
 		weekStart = getWeekStart(now, dayStart);
-		plot.setTitle(getChartTitle(getWeekStart(now, dayStart)));
+		plot.setTitle(getChartTitle(weekStart));
 		final List<WeekDay> week = getWeek(weekStart);
 		final List<DayRecord> dayRecords = dayRecordDAO.getRecords(weekStart.toUnixTimestamp(), weekStart.add(weeks(1)).toUnixTimestamp());
 		final ChartDay[] chartDays = getChartDays(profile, dayRecords, week, now);

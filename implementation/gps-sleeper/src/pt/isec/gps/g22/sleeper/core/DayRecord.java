@@ -76,6 +76,8 @@ public class DayRecord {
 			return false;
 		} else {
 			for(final DayRecord tempRecord : tempList) {
+				if (this.getId() == tempRecord.getId()) continue;
+
 				if(this.sleepDate > tempRecord.getSleepDate() && this.sleepDate < tempRecord.getWakeupDate()) // Intersection at the left side with another record
 					return true;
 				else if(this.sleepDate < tempRecord.getSleepDate() && this.wakeupDate > tempRecord.getWakeupDate()) // This record overlaps a record entirely

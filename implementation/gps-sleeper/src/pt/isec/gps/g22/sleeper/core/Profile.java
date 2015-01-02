@@ -6,14 +6,22 @@ package pt.isec.gps.g22.sleeper.core;
 public class Profile {
 	private int id;
 	private int gender;
-	private int dateOfBirth;
+	private long dateOfBirth;
+	private int firstHourOfTheDay;
+
+	public static final String TABLE_NAME = "profile";
+	public static final String COLUMN_ID = "_id";
+	public static final String COLUMN_GENDER = "gender";
+	public static final String COLUMN_DATEOFBIRTH = "dateofbirth";
+	public static final String COLUMN_FIRSTHOUROFTHEDAY = "firsthouroftheday";
 
 	public Profile() {
 	}
 
-	public Profile(int gender, int dateOfBirth) {
+	public Profile(int gender, int dateOfBirth, int firstHourOfTheDay) {
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
+		this.firstHourOfTheDay = firstHourOfTheDay;
 	}
 
 	public int getId() {
@@ -32,11 +40,19 @@ public class Profile {
 		this.gender = gender;
 	}
 
-	public int getDateOfBirth() {
+	public long getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(int dateOfBirth) {
+	public void setDateOfBirth(long dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
+	}
+
+	public int getFirstHourOfTheDay() {
+		return firstHourOfTheDay;
+	}
+
+	public void setFirstHourOfTheDay(int firstHourOfTheDay) {
+		this.firstHourOfTheDay = firstHourOfTheDay;
 	}
 }

@@ -1,5 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">gps-sleeper</string>
+    <string name="app_name">Sleep.er</string>
+    <string name="strLogo">logo</string>
+    <string name="title_activity_weekly_view">WeeklyViewActivity</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="strBirthDay">Date of Birth</string>
+    <string name="strGender">Gender</string>
+    <string name="strFemale">Female</string>
+    <string name="strMale">Male</string>
+    <string name="strFirstHourOfTheDay">Start hour</string>
+    <string name="StrOK">OK</string>
+    <string name="strCancel">Cancel</string>
+    <string name="strSave">Save</string>
+    <string name="strNext">Next</string>
+    <string name="strInsertRecord">Insert Record</string>
+    <string name="strClose">Close</string>
+    <string name="title_activity_main_screen">Main Screen</string>
+    <string name="strUserProfile">User Profile</string>
+    <string name="strSetAlarm">Set Alarm</string>
+    <string name="strWeeklyView">Weekly View</string>
+    <string name="strSleepTips">Sleep Tips</string>
+    <string name="title_activity_generic_tips">GenericTips</string>
+    <string name="strGenericTip">Tip</string>
+    <string name="title_activity_set_alarm">Set Alarm</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_dismiss_alarm">Dismiss Alarm</string>
+    <string name="DismissAlarm">Dismiss</string>
+    <string name="title_activity_daily_record">DailyRecord</string>
+    <string name="strDailyRecord">Daily Record</string>
+    <string name="notDefined">N/A</string>
+    <string name="strProfile">Profile</string>
+    <string name="icProfile">Profile Icon</string>
+    <string name="icDateOfBirth">Date Of Birth Icon</string>
+    <string name="icGender">Gender Icon</string>
+    <string name="icSetAlarm">Set Alarm Icon</string>
+    <string name="icWeeklyView">Set Alarm Icon</string>
+    <string name="icGenericTips">Generic Tips Icon</string>
+    <string name="icFirstHour">First Hour Icon</string>
+    <string name="icMoon">Moon Icon</string>
+    <string name="icSun">Sun Icon</string>
+    <string name="strSleepHour">Sleep Hour</string>
+    <string name="strWakeupHour">Wakeup Hour</string>    
+    <string name="strExhaustion">Exhaustion</string>
+    <string name="strSleepQuality">Sleep Qty</string>
+    <string name="icDelete">Delte Icon</string>
+   	<string name="icEdit">Edit Icon</string>
+    <string name="title_activity_day_view">DayView</string>
+    <string name="strDayView">Day</string>
 
 </resources>

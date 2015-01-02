@@ -12,41 +12,55 @@ public interface DayRecordDAO {
 	/**
 	 * Returns all the records relevant for the week containing the date
 	 * 
-	 * @param date
-	 * @return
+	 * @return the list of records or null if no records exist
 	 */
-	List<DayRecord> getWeekRecords(int date);
+	List<DayRecord> getAllRecords();
 
 	/**
 	 * Returns a record by id
 	 * 
 	 * @param id
 	 *            the record id
+	 *
 	 * @return the day record or null if no record with the id is found
 	 */
-	DayRecord getRecord(int id);
+	DayRecord loadDayRecord(int id);
 
 	/**
 	 * Creates a new day record
 	 * 
-	 * @param day
-	 *            record the record to insert
+	 * @param dayRecord
+	 * 				the record to insert
+	 *
+	 * @return the row id, or -1 if an error occurred
 	 */
-	void insertRecord(DayRecord dayRecord);
+	int insertRecord(DayRecord dayRecord);
 
 	/**
 	 * Updates a day record
-	 * 
+	 *
 	 * @param dayRecord
-	 *            the record to update
+	 * 				the record to update
+	 *
+	 * @return the number of rows affected
 	 */
-	void updateRecord(DayRecord dayRecord);
+	int updateRecord(DayRecord dayRecord);
+
 
 	/**
 	 * Deletes a day record by id
-	 * 
-	 * @param id
-	 *            the id of the record to delete
+	 *
+	 * @param dayRecord
+	 * 			the record to delete
+	 *
+	 * @return the number of rows affected
 	 */
-	void deleteRecord(int id);
+	int deleteRecord(DayRecord dayRecord);
+	/**
+	 * 
+	 * @param start the period start
+	 * @param end the period end
+	 * @returnReturns a list of dayRecords
+	 */
+	List<DayRecord> getRecords(long start, long end);
 }

@@ -1,0 +1,141 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <com.androidplot.xy.XYPlot
+        android:id="@+id/barPlot"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        androidPlot.domainLabel="Day of week"
+        androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
+        androidPlot.graphWidget.domainGridLinePaint.alpha="0"
+        androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+        androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+        androidPlot.graphWidget.domainOriginLinePaint.alpha="0"
+        androidPlot.graphWidget.gridBackgroundPaint.color="#FFFFFF"
+        androidPlot.graphWidget.gridLinePaint.color="#000000"
+        androidPlot.graphWidget.marginBottom="25dp"
+        androidPlot.graphWidget.marginLeft="15dp"
+        androidPlot.graphWidget.marginRight="10dp"
+        androidPlot.graphWidget.marginTop="20dp"
+        androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
+        androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
+        androidPlot.legendWidget.heightMetric.value="25dp"
+        androidPlot.legendWidget.iconSizeMetrics.heightMetric.value="15dp"
+        androidPlot.legendWidget.iconSizeMetrics.widthMetric.value="15dp"
+        androidPlot.legendWidget.positionMetrics.anchor="right_bottom"
+        androidPlot.legendWidget.textPaint.textSize="@dimen/legend_text_font_size"
+        androidPlot.rangeLabel="Hours"
+        androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
+        androidPlot.title="Sleep schedule"
+        androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size" />
+
+    <LinearLayout
+        android:id="@+id/layDashboard"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1.00"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Max Hours" />
+
+            <TextView
+                android:id="@+id/txtViewMaxHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Min Hours" />
+
+            <TextView
+                android:id="@+id/txtViewMinHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="13"
+                android:textSize="30sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weekly Debt" />
+
+            <TextView
+                android:id="@+id/txtViewSleepDebt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="14"
+                android:textSize="30sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1.00"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Average Exhaus." />
+
+            <TextView
+                android:id="@+id/txtViewAvgExhaustion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Average Quality" />
+
+            <TextView
+                android:id="@+id/txtViewAvgSleepQuality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="16"
+                android:textSize="30sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

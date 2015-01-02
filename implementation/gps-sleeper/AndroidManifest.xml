@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pt.isec.gps.a22.sleeper"
+    package="pt.isec.gps.g22.sleeper.ui"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -9,9 +10,52 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:name="pt.isec.gps.g22.sleeper.core.SleeperApp"
+        android:icon="@drawable/icsleeper"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/title_activity_profile" >
+        </activity>
+        
+        <activity
+            android:name="pt.isec.gps.g22.sleeper.ui.WeeklyViewActivity"
+            android:label="@string/title_activity_weekly_view" >
+        </activity>
+
+        <receiver android:name=".AlarmReceiver" >
+        </receiver>
+
+        <activity
+            android:name=".MainScreenActivity"
+            android:label="@string/title_activity_main_screen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".GenericTips"
+            android:label="@string/title_activity_generic_tips" >
+        </activity>
+        <activity
+            android:name=".SetAlarmActivity"
+            android:label="@string/title_activity_set_alarm" >
+        </activity>
+        <activity
+            android:name=".DismissAlarmActivity"
+            android:label="@string/title_activity_dismiss_alarm" >
+        </activity>
+        <activity
+            android:name=".DailyRecordActivity"
+            android:label="@string/title_activity_daily_record" >
+        </activity>
+		<activity
+            android:name=".DayView"
+            android:label="@string/title_activity_day_view" >
+        </activity>
     </application>
 
 </manifest>

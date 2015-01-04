@@ -46,4 +46,25 @@ public class SleeperApp extends Application {
 		return dayRecordDAO;
 	}
 	
+	private int weekOffset = 0;
+
+	public int getWeekOffset() {
+		return weekOffset;
+	}
+
+	public int setWeekOffset(final int weekOffset) {
+		this.weekOffset = weekOffset;
+		
+		return weekOffset;
+	}
+	
+	public int incrementWeekOffset() {
+		return setWeekOffset(getWeekOffset() + 1);
+	}
+	
+	public int decrementWeekOffset() {
+		return setWeekOffset(getWeekOffset() - 1);
+	}
+	
+	
 }

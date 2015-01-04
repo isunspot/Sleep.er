@@ -95,10 +95,15 @@ public class DailyRecordActivity extends Activity {
 				msg = "Daily record updated";
 			}
 		} else {
-			dayRecord = setDayRecord(null);
-			if(!dayRecord.recordOverlap(tempList)) {
-				sleeperApp.getDayRecordDAO().insertRecord(dayRecord);
-				msg = "Daily record inserted";
+			if (sleep == null || wakeup == null) {
+        		Toast.makeText(getApplicationContext(), "Please define all fields", Toast.LENGTH_SHORT).show();
+        		return;
+			} else {
+				dayRecord = setDayRecord(null);
+				if(!dayRecord.recordOverlap(tempList)) {
+					sleeperApp.getDayRecordDAO().insertRecord(dayRecord);
+					msg = "Daily record inserted";
+				}	
 			}
 		}
 		      

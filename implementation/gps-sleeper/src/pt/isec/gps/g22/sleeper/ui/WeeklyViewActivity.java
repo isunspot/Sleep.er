@@ -61,7 +61,6 @@ public class WeeklyViewActivity extends Activity {
 	private XYPlot plot;
 	
 	private float x1,x2;
-	private int weekOffset = 0;
 	
 	private DateTime weekStart;
 	private TimeOfDay dayStart;
@@ -88,6 +87,8 @@ public class WeeklyViewActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_weekly_view);
+		
+		getActionBar().hide();
 
 		/*
 		 * Get the DAOs 
@@ -210,7 +211,8 @@ public class WeeklyViewActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-		final DateTime now = DateTime.now();
+		final int weekOffset = ((SleeperApp) getApplication()).getWeekOffset();
+		final DateTime now = DateTime.now().add(weeks(abs(weekOffset), weekOffset >= 0));
 		loadValues(now);
 		bindValues();
 	}
@@ -237,8 +239,9 @@ public class WeeklyViewActivity extends Activity {
 
 			if (Math.abs(deltaX) > MIN_DISTANCE) {
 				// Left to Right swipe action
+				final SleeperApp app = ((SleeperApp) getApplication()); 
 				if (x2 > x1) {
-					weekOffset -= 1;
+					final int weekOffset = app.decrementWeekOffset();
 					final DateTime now = DateTime.now().add(weeks(abs(weekOffset), weekOffset >= 0));
 					weekStart = getWeekStart(now, dayStart);
 					loadValues(weekStart);
@@ -247,7 +250,7 @@ public class WeeklyViewActivity extends Activity {
 
 				// Right to left swipe action
 				else {
-					weekOffset += 1;
+					final int weekOffset = app.incrementWeekOffset();
 					final DateTime now = DateTime.now().add(weeks(abs(weekOffset), weekOffset >= 0));
 					weekStart = getWeekStart(now, dayStart);
 					loadValues(weekStart);

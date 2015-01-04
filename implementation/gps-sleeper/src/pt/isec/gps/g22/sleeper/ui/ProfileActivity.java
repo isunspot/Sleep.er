@@ -253,7 +253,7 @@ public class ProfileActivity extends Activity {
     	
     	public void onDateSet(final DatePicker view, final int year, final int month, final int day) {
     		if(view.isShown()) {
-    			dateOfBirth = DateTime.fromDate(year, month, day);
+    			dateOfBirth = DateTime.fromDate(year, month + 1, day); // month is 0-based
     			String s = TimeUtils.formatDate(dateOfBirth);
     			tvDateOfBirthValue.setText(s);
     		}

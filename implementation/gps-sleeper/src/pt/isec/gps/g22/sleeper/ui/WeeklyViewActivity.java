@@ -35,6 +35,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -53,6 +54,7 @@ import com.androidplot.xy.XYStepMode;
 
 public class WeeklyViewActivity extends Activity {
 
+	private static final String LOG = "WeeklyView";	
 	private static final String[] DOW = { "S", "M", "T", "W", "T", "F", "S" };
 	static final int MIN_DISTANCE = 150;
 	
@@ -212,6 +214,7 @@ public class WeeklyViewActivity extends Activity {
 		super.onResume();
 		
 		final int weekOffset = ((SleeperApp) getApplication()).getWeekOffset();
+		Log.d(LOG, "Loading weekly view with a week offset of " + weekOffset);
 		final DateTime now = DateTime.now().add(weeks(abs(weekOffset), weekOffset >= 0));
 		loadValues(now);
 		bindValues();
@@ -242,18 +245,20 @@ public class WeeklyViewActivity extends Activity {
 				final SleeperApp app = ((SleeperApp) getApplication()); 
 				if (x2 > x1) {
 					final int weekOffset = app.decrementWeekOffset();
+					Log.d(LOG, "Loading weekly view with a week offset of " + weekOffset);
 					final DateTime now = DateTime.now().add(weeks(abs(weekOffset), weekOffset >= 0));
-					weekStart = getWeekStart(now, dayStart);
-					loadValues(weekStart);
+					//weekStart = getWeekStart(now, dayStart);
+					loadValues(now);
 					bindValues();
 				}
 
 				// Right to left swipe action
 				else {
 					final int weekOffset = app.incrementWeekOffset();
+					Log.d(LOG, "Loading weekly view with a week offset of " + weekOffset);
 					final DateTime now = DateTime.now().add(weeks(abs(weekOffset), weekOffset >= 0));
-					weekStart = getWeekStart(now, dayStart);
-					loadValues(weekStart);
+					//weekStart = getWeekStart(now, dayStart);
+					loadValues(now);
 					bindValues();
 				}
 

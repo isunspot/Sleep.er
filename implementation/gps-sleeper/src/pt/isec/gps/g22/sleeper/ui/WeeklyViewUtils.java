@@ -1,7 +1,5 @@
 package pt.isec.gps.g22.sleeper.ui;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 import static pt.isec.gps.g22.sleeper.core.time.TimeDelta.duration;
 import static pt.isec.gps.g22.sleeper.core.time.TimeDelta.fromSeconds;
 
@@ -9,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import android.R.anim;
 import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.ExhaustionLevel;
 import pt.isec.gps.g22.sleeper.core.Profile;
@@ -157,8 +154,6 @@ public class WeeklyViewUtils {
 					long expectedSeconds = Math.abs(expectedSleep.asSeconds());
 					for (int j = 0; j < dayRecords.size(); j++) {
 						final DayRecord record = dayRecords.get(j);
-//						if (weekDay.from.after(DateTime.fromSeconds(record.getSleepDate()))) 
-//							continue;
 						final long recordSeconds = sleepSum(record, weekDay.from, weekDay.until).asSeconds(); //record.getWakeupDate() - record.getSleepDate();
 						expectedSeconds -= recordSeconds;
 						if (expectedSeconds < 0) {
@@ -169,7 +164,6 @@ public class WeeklyViewUtils {
 				}
 			}
 
-			android.util.Log.d("SLEEP", "Optimum waking time for " + weekDay + ": " + optimumWakingTime);
 			chartDays[i] = new ChartDay(weekDay.from, weekDay.until, debt, accumDebt, optimumWakingTime, dayRecords);
 			
 			accumDebt = accumDebt.add(debt);

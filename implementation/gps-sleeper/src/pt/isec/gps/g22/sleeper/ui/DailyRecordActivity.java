@@ -151,11 +151,13 @@ public class DailyRecordActivity extends Activity {
 				sleep = TimeOfDay.at(sleepDate.getHours(), sleepDate.getMinutes()); 
 			    final String sleepHour = TimeUtils.formatHoursMinutes(sleepDate.toTimeOfDay());
 			    tvSleepHourValue.setText(sleepHour);
+			    rbExhaustion.setRating(dayRecord.getExhaustion());
 			    
 			    final DateTime wakeupDate = DateTime.fromSeconds(dayRecord.getWakeupDate());
 			    wakeup = TimeOfDay.at(wakeupDate.getHours(), wakeupDate.getMinutes());
 			    final String wakeupHour = TimeUtils.formatHoursMinutes(wakeupDate.toTimeOfDay());
 			    tvWakeupHourValue.setText(wakeupHour);
+			    rbQualitySleep.setRating(dayRecord.getSleepQuality());
 			}
 		}
 	}

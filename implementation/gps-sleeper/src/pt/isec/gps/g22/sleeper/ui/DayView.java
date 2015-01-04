@@ -2,13 +2,12 @@ package pt.isec.gps.g22.sleeper.ui;
 
 import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.days;
 
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 import pt.isec.gps.g22.sleeper.core.DayRecord;
 import pt.isec.gps.g22.sleeper.core.SleeperApp;
 import pt.isec.gps.g22.sleeper.core.time.DateTime;
-import pt.isec.gps.g22.sleeper.core.time.TimeDelta;
 import pt.isec.gps.g22.sleeper.core.time.TimeUtils;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -68,11 +67,25 @@ public class DayView extends Activity {
 				getApplicationContext(),
 				sleeper,
 				day,
-				sleeper.getDayRecordDAO().getRecords(
-						day.toUnixTimestamp(), 
-						day.add(days(1)).toUnixTimestamp()));
+				getRecords(day));
 		dayViewList.setAdapter(customAdapter);
 		dayViewList.invalidate();
+	}
+	
+	private final List<DayRecord> getRecords(final DateTime day) {
+		final List<DayRecord> records = sleeper.getDayRecordDAO().getRecords(
+				day.toUnixTimestamp(), 
+				day.add(days(1)).toUnixTimestamp());
+		
+		final Iterator<DayRecord> it = records.iterator();
+		while(it.hasNext()) {
+			final DayRecord record = it.next();
+			if (day.after(DateTime.fromSeconds(record.getSleepDate()))) {
+				it.remove();
+			}
+		}
+		
+		return records;
 	}
 	
     private void hideActionBar() {

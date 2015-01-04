@@ -1,5 +1,6 @@
 package pt.isec.gps.g22.sleeper.ui;
 
+import static java.lang.Math.abs;
 import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.formatDate;
 import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.formatDuration;
 import static pt.isec.gps.g22.sleeper.core.time.TimeUtils.weeks;
@@ -53,13 +54,14 @@ import com.androidplot.xy.XYStepMode;
 public class WeeklyViewActivity extends Activity {
 
 	private static final String[] DOW = { "S", "M", "T", "W", "T", "F", "S" };
+	static final int MIN_DISTANCE = 150;
 	
 	private DayRecordDAO dayRecordDAO;
 	private ProfileDAO profileDAO;
 	private XYPlot plot;
 	
 	private float x1,x2;
-	static final int MIN_DISTANCE = 150;
+	private int weekOffset = 0;
 	
 	private DateTime weekStart;
 	private TimeOfDay dayStart;
@@ -236,14 +238,18 @@ public class WeeklyViewActivity extends Activity {
 			if (Math.abs(deltaX) > MIN_DISTANCE) {
 				// Left to Right swipe action
 				if (x2 > x1) {
-					weekStart = weekStart.add(weeks(1, false));
+					weekOffset -= 1;
+					final DateTime now = DateTime.now().add(weeks(abs(weekOffset), weekOffset >= 0));
+					weekStart = getWeekStart(now, dayStart);
 					loadValues(weekStart);
 					bindValues();
 				}
 
 				// Right to left swipe action
 				else {
-					weekStart = weekStart.add(weeks(1));
+					weekOffset += 1;
+					final DateTime now = DateTime.now().add(weeks(abs(weekOffset), weekOffset >= 0));
+					weekStart = getWeekStart(now, dayStart);
 					loadValues(weekStart);
 					bindValues();
 				}

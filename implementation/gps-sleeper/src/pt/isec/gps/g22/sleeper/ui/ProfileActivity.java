@@ -107,26 +107,25 @@ public class ProfileActivity extends Activity {
         	    newFragment.show(getFragmentManager(), "timePicker");
             }
         });
-        
+
         layoutSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            	if(dateOfBirth!=null&&gender!=-1&&firstHourOfTheDay!=-1){
+            	if(dateOfBirth != null && gender != -1 && firstHourOfTheDay != -1) {
 	        	    profile.setDateOfBirth(dateOfBirth.toUnixTimestamp());
 	        	    profile.setGender(gender);
 	        	    profile.setFirstHourOfTheDay((int) firstHourOfTheDay);
-	        	    
-	        	    if (profile!=null){
-	        	    	if(sleeper.profileDefined()) {
-	        	    		sleeper.getProfileDAO().updateProfile(profile);
-	        	    	} else {
-	        	    		sleeper.getProfileDAO().insertProfile(profile);
-	        	    		sleeper.defineProfile();
-	        	    	}
-	        	    }
-	        	    
-	        	    startActivity(new Intent(ctx, MainScreenActivity.class));
-            	}else{
+
+        	    	if(sleeper.profileDefined()) {
+        	    		sleeper.getProfileDAO().updateProfile(profile);
+        	    	} else {
+        	    		sleeper.getProfileDAO().insertProfile(profile);
+        	    		sleeper.defineProfile();
+        	    		startActivity(new Intent(ctx, MainScreenActivity.class));
+        	    	}
+
+	        	    finish();
+            	} else {
             		Toast.makeText(getApplicationContext(), "Please define all fields", Toast.LENGTH_SHORT).show();
             	}
             }
